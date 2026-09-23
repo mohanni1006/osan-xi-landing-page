@@ -1,229 +1,499 @@
 <!DOCTYPE html>
-<html lang="ko" class="ready performance-pc-mode performance-side-fixed-active">
+<html lang="ko">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
-  <meta http-equiv="Expires" content="0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>오산 헤리티지 자이 | 공식 분양상담센터</title>
 
-<!-- ===================================================================================
-    정적 SEO/OG
-===================================================================================  -->
+  <!-- 메타 태그 / SEO -->
+  <meta name="description" content="1,783세대 브랜드 대단지 오산 헤리티지 자이, 500만원 계약, 방문예약 및 분양가 상담">
   <meta property="og:type" content="website">
-  <title>오산 헤리티지 자이</title>
-  <meta property="og:title" content="오산 헤리티지 자이">
-  <meta name="description" content="병점역 생활권! 1,783세대 1군 브랜드 대단지 신규아파트">
-  <meta property="og:description" content="병점역 생활권! 1,783세대 1군 브랜드 대단지 신규아파트">
-  <meta property="og:image" content="/img/Thumbnail-banner.png?v=0002">
+  <meta property="og:title" content="오산 헤리티지 자이 - 모델하우스 방문예약">
+  <meta property="og:description" content="동탄생활권 1군 브랜드 대단지! 500만원으로 계약 가능">
+  <meta property="og:image" content="./main-img.jpg">
 
-<!-- ===================================================================================
-    필요 리소스 임베드 (스타일 및 라이브러리)
-===================================================================================  -->
-  <link rel="stylesheet" href="./오산 헤리티지 자이_files/style.css">
-  <link rel="stylesheet" href="./오산 헤리티지 자이_files/performance-style-pc.css">
-  <link rel="stylesheet" as="style" href="./오산 헤리티지 자이_files/pretendardvariable-dynamic-subset.min.css">
-  <link rel="stylesheet" href="./오산 헤리티지 자이_files/swiper-bundle.min.css">
+  <style>
+    /* ================= 공통 초기화 & 기본 스타일 ================= */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", helvetica, sans-serif;
+      color: #333;
+      background-color: #0d1117;
+      line-height: 1.5;
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: none;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; width: 100%; height: auto; border: 0; }
 
-  <script src="./오산 헤리티지 자이_files/jquery-3.6.0.min.js.다운로드" defer></script>
-  <script src="./오산 헤리티지 자이_files/feather-icons" defer></script>
-  <script src="./오산 헤리티지 자이_files/swiper-bundle.min.js.다운로드" defer></script>
+    /* ================= 상단 고정 헤더 ================= */
+    .top-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 66px;
+      background: rgba(13, 17, 23, 0.96);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #ffffff;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .header-logo .badge-xi {
+      background: #0070c0;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 900;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    .nav-bar {
+      display: flex;
+      gap: 20px;
+    }
+    .nav-bar a {
+      color: #cbd5e1;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .nav-bar a:hover {
+      color: #38bdf8;
+    }
+    .header-tel-btn img {
+      width: 110px;
+      height: auto;
+    }
 
-  <!-- ⚠️ site-data.js, header.js, footer.js 등 화면 내용을 원래대로 되돌리는 스크립트는 제외했습니다 -->
-  <script src="./오산 헤리티지 자이_files/script(1).js.다운로드" defer></script>
-  <script src="./오산 헤리티지 자이_files/performance-main-pc.js.다운로드" defer></script>
-  <script src="./오산 헤리티지 자이_files/performance-script-pc.js.다운로드" defer></script>
+    /* ================= 2컬럼 레이아웃 (PC) ================= */
+    .container {
+      max-width: 1360px;
+      margin: 66px auto 0 auto;
+      display: flex;
+      position: relative;
+    }
+    .main-content {
+      flex: 1;
+      max-width: 960px;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+    }
+    .img-wrap {
+      width: 100%;
+      background: #000;
+    }
 
-  <!-- Google tag (gtag.js) -->
-  <script async src="./오산 헤리티지 자이_files/js"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-Y1XXYX24P5');
-  </script>
+    /* ================= 우측 사이드 상담신청 패널 ================= */
+    .side-panel {
+      width: 380px;
+      position: sticky;
+      top: 80px;
+      height: fit-content;
+      margin-left: 20px;
+      padding: 24px;
+      background: #161f30;
+      border: 1px solid #2d3c53;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      z-index: 100;
+    }
+    .side-panel h3 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #ffffff;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .side-panel p.sub {
+      font-size: 0.82rem;
+      color: #94a3b8;
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .direct-call-box {
+      background: #0b111e;
+      border: 1px solid #1e40af;
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .direct-call-box span {
+      display: block;
+      color: #93c5fd;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .direct-call-box a {
+      font-size: 1.7rem;
+      font-weight: 900;
+      color: #facc15;
+      letter-spacing: 0.5px;
+    }
+
+    /* 입력 양식 */
+    .form-row {
+      margin-bottom: 14px;
+    }
+    .form-row label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin-bottom: 6px;
+    }
+    .form-row input, 
+    .form-row select, 
+    .form-row textarea {
+      width: 100%;
+      padding: 12px;
+      background: #0b111e;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .form-row input:focus, 
+    .form-row textarea:focus {
+      border-color: #38bdf8;
+    }
+    .form-row textarea {
+      resize: none;
+      height: 70px;
+    }
+    .agree-check {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .agree-check input {
+      accent-color: #2563eb;
+    }
+    .submit-button {
+      width: 100%;
+      background: #2563eb;
+      color: #fff;
+      padding: 15px;
+      border: 0;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .submit-button:hover {
+      background: #1d4ed8;
+    }
+
+    /* ================= 푸터 ================= */
+    .footer {
+      background: #080c14;
+      color: #64748b;
+      padding: 35px 20px 110px 20px;
+      border-top: 1px solid #1e293b;
+      font-size: 0.8rem;
+      line-height: 1.7;
+    }
+    .footer-inner {
+      max-width: 1360px;
+      margin: 0 auto;
+    }
+    .footer strong { color: #cbd5e1; }
+
+    /* ================= 모바일 플로팅 하단바 ================= */
+    .mo-bar {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(11, 17, 30, 0.98);
+      border-top: 1px solid #1e293b;
+      padding: 8px 12px;
+      z-index: 999;
+      box-shadow: 0 -4px 15px rgba(0,0,0,0.5);
+    }
+    .mo-bubble {
+      max-width: 460px;
+      margin: 0 auto 6px auto;
+    }
+    .mo-rolling {
+      max-width: 460px;
+      margin: 0 auto 8px auto;
+    }
+    .mo-btn-group {
+      display: flex;
+      gap: 8px;
+      max-width: 460px;
+      margin: 0 auto;
+    }
+    .btn-call {
+      flex: 1;
+      height: 48px;
+      background: #dc2626;
+      color: #fff;
+      font-weight: 900;
+      font-size: 1.05rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-reserve {
+      flex: 1;
+      height: 48px;
+      background: #2563eb;
+      color: #fff;
+      font-weight: 900;
+      font-size: 1.05rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ================= 반응형 (모바일 최적화) ================= */
+    @media (max-width: 1024px) {
+      .side-panel {
+        display: none;
+      }
+      .main-content {
+        max-width: 100%;
+      }
+      .container {
+        margin-top: 60px;
+      }
+      .top-header {
+        height: 60px;
+        padding: 0 14px;
+      }
+      .nav-bar {
+        display: none;
+      }
+      .mo-bar {
+        display: block;
+      }
+      .mobile-form-sec {
+        display: block !important;
+        padding: 30px 16px;
+        background: #161f30;
+      }
+    }
+    .mobile-form-sec {
+      display: none;
+    }
+  </style>
 </head>
 
 <body>
-  <!-- 헤더 영역 -->
-  <site-header>
-    <header class="site-header is-logo-white" role="banner" style="opacity:1">
-      <div class="gnb">
-        <!-- 로고 -->
-        <a class="logo" href="#">
-          <img class="header-logo-color" src="./오산 헤리티지 자이_files/logo-color.png" alt="헤더로고-컬러">
-          <img class="header-logo-white" src="./오산 헤리티지 자이_files/logo-white.png" alt="헤더로고-화이트">
-        </a>
 
-        <!-- 네비게이션 메뉴 -->
-        <nav class="nav" aria-label="주요 카테고리">
-          <a href="#summary">사업안내</a>
-          <a href="#location">프리미엄</a>
-          <a href="#siteplan">단지안내</a>
-          <a href="#type">세대안내</a>
-          <a href="#interior">인테리어</a>
-          <a href="#community">커뮤니티</a>
-          <a href="#pc-side-fixed-panel">방문예약</a>
-        </nav>
+  <!-- 1. 상단 고정 헤더 -->
+  <header class="top-header">
+    <div class="header-logo">
+      <span class="badge-xi">Xi</span>
+      <span>오산 헤리티지 자이</span>
+    </div>
+    
+    <nav class="nav-bar">
+      <a href="#hero">처음으로</a>
+      <a href="#benefit">특장점</a>
+      <a href="#summary">사업개요</a>
+      <a href="#premium">프리미엄</a>
+      <a href="#interior">인테리어</a>
+      <a href="#inquiry-box">방문예약</a>
+    </nav>
 
-        <!-- 📞 대표번호 (1555-0031) -->
-        <a class="number" href="tel:1555-0031">
-          <p class="pc">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-phone"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-            1555-0031
-          </p>
-          <img class="header-tel mo" src="./오산 헤리티지 자이_files/mo-header-tel.gif" alt="모바일 헤더 텔버튼">
-        </a>
-      </div>
-    </header>
-  </site-header>
+    <!-- 우측 헤더 전화 배너 (mo-header-tel.gif) -->
+    <a href="tel:1555-0031" class="header-tel-btn">
+      <img src="./mo-header-tel.gif" alt="전화상담 1555-0031">
+    </a>
+  </header>
 
-  <!-- 본문 메인 컨텐츠 영역 -->
-  <div id="site-body-root">
-    <site-pc-body data-rendered="true">
-      <div id="wrap" class="performance-pc-wrap performance-layout-side-fixed">
-        <main>
-          <!-- 메인 비주얼 -->
-          <section class="performance-section performance-main logo-white" id="main">
-            <img src="./오산 헤리티지 자이_files/main-img.png" class="performance-img" alt="메인">
-            <img src="./오산 헤리티지 자이_files/main-bg.jpg" class="performance-bg" alt="">
-          </section>
+  <!-- 2. 본문 2컬럼 레이아웃 -->
+  <div class="container">
+    <div class="main-content">
 
-          <div class="performance-section-wrap">
-            <div class="performance-section-left">
-              <!-- 혜택 -->
-              <section class="performance-section" id="benefit">
-                <img src="./오산 헤리티지 자이_files/benefit.png" class="performance-img" alt="혜택" loading="lazy">
-                <img src="./오산 헤리티지 자이_files/benefit-bg.jpg" class="performance-bg" alt="" loading="lazy">
-              </section>
-
-              <!-- 사업개요 -->
-              <section class="performance-section" id="summary">
-                <img src="./오산 헤리티지 자이_files/summary.png" class="performance-img" alt="사업개요" loading="lazy">
-                <img src="./오산 헤리티지 자이_files/summary-bg.jpg" class="performance-bg" alt="" loading="lazy">
-              </section>
-
-              <!-- 인테리어 -->
-              <section class="performance-section" id="interior">
-                <img src="./오산 헤리티지 자이_files/interior.png" class="performance-img" alt="인테리어" loading="lazy">
-                <img src="./오산 헤리티지 자이_files/interior-bg.jpg" class="performance-bg" alt="" loading="lazy">
-              </section>
-
-              <!-- 배너 01 -->
-              <section class="performance-section">
-                <img src="./오산 헤리티지 자이_files/banner01.png" class="performance-img" alt="배너" loading="lazy">
-                <img src="./오산 헤리티지 자이_files/banner-bg.jpg" class="performance-bg" alt="" loading="lazy">
-              </section>
-
-              <!-- 타입 -->
-              <section class="performance-section" id="type">
-                <img src="./오산 헤리티지 자이_files/type.png" class="performance-img" alt="타입" loading="lazy">
-                <img src="./오산 헤리티지 자이_files/type-bg.jpg" class="performance-bg" alt="" loading="lazy">
-              </section>
-
-              <!-- 입지환경 -->
-              <section class="performance-section" id="location">
-                <img src="./오산 헤리티지 자이_files/location.png" class="performance-img" alt="입지환경" loading="lazy">
-                <img src="./오산 헤리티지 자이_files/location-bg.jpg" class="performance-bg" alt="" loading="lazy">
-              </section>
-
-              <!-- 배너 02 -->
-              <section class="performance-section">
-                <img src="./오산 헤리티지 자이_files/banner02.png" class="performance-img" alt="배너" loading="lazy">
-                <img src="./오산 헤리티지 자이_files/banner-bg.jpg" class="performance-bg" alt="" loading="lazy">
-              </section>
-
-              <!-- 커뮤니티 -->
-              <section class="performance-section" id="community">
-                <img src="./오산 헤리티지 자이_files/community.png" class="performance-img" alt="커뮤니티" loading="lazy">
-                <img src="./오산 헤리티지 자이_files/community-bg.jpg" class="performance-bg" alt="" loading="lazy">
-              </section>
-
-              <!-- 배너 03 -->
-              <section class="performance-section">
-                <img src="./오산 헤리티지 자이_files/banner03.png" class="performance-img" alt="배너" loading="lazy">
-                <img src="./오산 헤리티지 자이_files/banner-bg.jpg" class="performance-bg" alt="" loading="lazy">
-              </section>
-
-              <!-- 단지배치도 -->
-              <section class="performance-section" id="siteplan">
-                <img src="./오산 헤리티지 자이_files/siteplan.png" class="performance-img" alt="단지배치도" loading="lazy">
-                <img src="./오산 헤리티지 자이_files/siteplan-bg.jpg" class="performance-bg" alt="" loading="lazy">
-              </section>
-            </div>
-
-            <!-- 우측 사이드 패널 (DB 접수 폼) -->
-            <aside class="performance-section-right" id="pc-side-fixed-panel">
-              <div class="performance-side-content">
-                <div class="performance-dbcart performance-dbcart--side">
-                  <iframe src="./오산 헤리티지 자이_files/saved_resource.html" title="방문예약 DB카트" height="600" scrolling="no" loading="lazy"></iframe>
-                </div>
-              </div>
-            </aside>
-          </div>
-        </main>
-
-        <!-- TOP 이동 버튼 -->
-        <button type="button" class="performance-top-button" aria-label="페이지 상단으로 이동" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-          <span aria-hidden="true">↑</span>
-          <small>TOP</small>
-        </button>
-      </div>
-    </site-pc-body>
-  </div>
-
-  <!-- 푸터 영역 -->
-  <site-footer>
-    <footer class="footer site-footer">
-      <!-- 📌 MO 하단 퀵버튼 (1555-0031) -->
-      <section class="mo_quick_bottom arni" id="mo_quick_bottom">
-        <article class="mo_quick_bottom_btn">
-          <a href="tel:1555-0031">
-            <img src="./오산 헤리티지 자이_files/quick-bottom-btn2.png" alt="전화상담">
-          </a>  
-          <button id="scrollButton" onclick="document.querySelector('#pc-side-fixed-panel')?.scrollIntoView({behavior:'smooth'})">
-            <img src="./오산 헤리티지 자이_files/quick-bottom-btn1.png" alt="방문예약">
-          </button>
-        </article>
+      <!-- ① 상단 메인 히어로 (main-img.jpg) -->
+      <section class="img-wrap" id="hero">
+        <img src="./main-img.jpg" alt="오산 헤리티지 자이 500만원 계약가능">
       </section>
 
-      <!-- 푸터 안내 박스 -->
-      <div class="ft_wrap">
-        <div class="ft_box1">
-          <img class="logo-white" src="./오산 헤리티지 자이_files/logo-white.png" alt="로고-흰색">
-          <img class="logo-color" src="./오산 헤리티지 자이_files/logo-color.png" alt="로고-컬러">
+      <!-- ② 핵심 4대 특장점 (benefit.png) -->
+      <section class="img-wrap" id="benefit">
+        <img src="./benefit.png" alt="SPECIAL BENEFIT 4 - 병점 동탄 더블생활권">
+      </section>
 
-          <table>
-            <tbody>
-              <tr>
-                <td>현장명</td>
-                <td>오산 헤리티지 자이</td>
-              </tr>
-              <tr>
-                <td>현장위치</td>
-                <td>경기도 오산시 양산동 223번지 일원(1BL), <br>경기도 오산시 양산동 328-2번지 일원(2BL)</td>
-              </tr>
-              <tr>
-                <td>광고대행사</td>
-                <td>(주)카피의신 | <br> 경기도 오산시 양산동 223번지 | </td>
-              </tr>
-            </tbody>
-          </table>
+      <!-- ③ 직주근접 띠배너 01 (banner01.jpg) -->
+      <section class="img-wrap">
+        <img src="./banner01.jpg" alt="삼성전자 캠퍼스 직주근접 1,783세대">
+      </section>
 
-          <p>※ 본 사이트의 CG, 일러스트, 이미지 등은 소비자의 이해를 돕기 위해 제작된 것으로 실제와 상이할 수 있습니다.</p>
-          <p class="copyright">Copyright ⓒ <span class="title">오산 헤리티지 자이</span> All Rights Reserved by</p>
+      <!-- ④ 사업개요 상세표 (summary.jpg) -->
+      <section class="img-wrap" id="summary">
+        <img src="./summary.jpg" alt="사업개요 1BL 2BL 공급규모 총 1,783세대">
+      </section>
+
+      <!-- ⑤ 프리미엄 조감도 & 100만원 상품권 혜택 (landing_top_...) -->
+      <section class="img-wrap" id="premium">
+        <img src="./landing_top_144686_1789021183_0_62512015.jpg" alt="선착순 계약시 100만원 상품권 증정">
+      </section>
+
+      <!-- ⑥ 스카이라운지 커뮤니티 띠배너 03 (banner03.jpg) -->
+      <section class="img-wrap">
+        <img src="./banner03.jpg" alt="26층 스카이라운지 커뮤니티 단지 내 사우나">
+      </section>
+
+      <!-- ⑦ 인테리어 갤러리 (interior.jpg) -->
+      <section class="img-wrap" id="interior">
+        <img src="./interior.jpg" alt="세련된 감각으로 완성한 인테리어 갤러리">
+      </section>
+
+      <!-- 모바일 전용 상담 폼 (화면 축소 시 하단 표시) -->
+      <section class="mobile-form-sec" id="inquiry-box-mo">
+        <div style="max-width: 440px; margin: 0 auto; color: #fff;">
+          <h3 style="font-size: 1.45rem; text-align: center; margin-bottom: 6px;">VIP 모델하우스 방문예약</h3>
+          <p style="text-align: center; color: #94a3b8; font-size: 0.85rem; margin-bottom: 20px;">잔여동호수 실시간 배정 및 분양가 상담</p>
+          
+          <form onsubmit="onFormSubmit(event)">
+            <div class="form-row">
+              <label>성함 *</label>
+              <input type="text" placeholder="고객명 입력" required>
+            </div>
+            <div class="form-row">
+              <label>연락처 *</label>
+              <input type="tel" placeholder="010-0000-0000" required>
+            </div>
+            <div class="form-row">
+              <label>관심 평형대</label>
+              <select>
+                <option value="전체">평형 선택 (전체)</option>
+                <option value="75㎡">75㎡ (구 29평)</option>
+                <option value="84㎡">84㎡ (구 34평)</option>
+                <option value="102㎡">102㎡ (구 40평)</option>
+                <option value="대형">124㎡ / 166㎡</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>방문 희망일 및 문의사항</label>
+              <textarea placeholder="방문 희망일 또는 궁금하신 점을 적어주세요."></textarea>
+            </div>
+            <div class="agree-check">
+              <input type="checkbox" id="check-mo" checked required>
+              <label for="check-mo">개인정보 수집 및 분양상담 목적 활용 동의 [필수]</label>
+            </div>
+            <button type="submit" class="submit-button">상담 예약 신청하기</button>
+          </form>
         </div>
-        
-        <div class="ft_box2">
-          <!-- 📞 푸터 우측 상담 전화번호 (1555-0031) -->
-          <div class="ft_number">
-            <a href="tel:1555-0031">상담문의&nbsp;<b>1555-0031</b></a>
-          </div>
-          <button class="mo" id="scrollTopBtn" aria-label="상단 스크롤" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
-          </button>
-        </div>
+      </section>
+
+    </div>
+
+    <!-- 3. PC 전용 우측 고정 상담 폼 -->
+    <aside class="side-panel" id="inquiry-box">
+      <h3>모델하우스 방문예약</h3>
+      <p class="sub">선착순 동호지정 및 분양가 빠른 안내</p>
+
+      <div class="direct-call-box">
+        <span>전화상담 및 모델하우스 위치 문자 전송</span>
+        <a href="tel:1555-0031">1555-0031</a>
       </div>
-    </footer>
-  </site-footer>
+
+      <form onsubmit="onFormSubmit(event)">
+        <div class="form-row">
+          <label>성함 *</label>
+          <input type="text" placeholder="성함 입력" required>
+        </div>
+
+        <div class="form-row">
+          <label>휴대폰 번호 *</label>
+          <input type="tel" placeholder="010-0000-0000" required>
+        </div>
+
+        <div class="form-row">
+          <label>관심 평형</label>
+          <select>
+            <option value="전체">전체 타입 문의</option>
+            <option value="75㎡">75㎡ (선호도 높음)</option>
+            <option value="84㎡">84㎡ (인기 국민평형)</option>
+            <option value="102㎡">102㎡ (여유로운 중대형)</option>
+            <option value="대형">124㎡ / 166㎡ (희소 대형)</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>문의/방문희망일</label>
+          <textarea placeholder="방문 예정 일자나 문의사항을 남겨주세요."></textarea>
+        </div>
+
+        <div class="agree-check">
+          <input type="checkbox" id="check-pc" checked required>
+          <label for="check-pc">개인정보 수집 및 분양안내 활용 동의</label>
+        </div>
+
+        <button type="submit" class="submit-button">VIP 방문예약 신청</button>
+      </form>
+    </aside>
+  </div>
+
+  <!-- 4. 푸터 영역 -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <p><strong>오산 헤리티지 자이 견본주택 공식 분양안내관</strong></p>
+      <p>사업지: 경기도 오산시 양산동 223번지 일원(1BL) / 양산동 328-2번지 일원(2BL)</p>
+      <p>분양문의: <a href="tel:1555-0031" style="color: #facc15; font-weight: bold;">1555-0031</a></p>
+      <p style="margin-top: 10px; color: #475569;">※ 본 웹사이트에 수록된 조감도, 단지배치도, 이미지 등은 소비자의 이해를 돕기 위한 것으로 실제와 차이가 있을 수 있습니다.</p>
+      <p style="color: #475569;">Copyright &copy; 2026 오산 헤리티지 자이. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <!-- 5. 모바일 플로팅 하단바 -->
+  <div class="mo-bar">
+    <!-- 파격 조건변경 말풍선 (quick_bottom_bubble.jpg) -->
+    <div class="mo-bubble">
+      <img src="./quick_bottom_bubble.jpg" alt="파격 조건변경 강남 20분대">
+    </div>
+
+    <!-- 롤링 카피 배너 (mo-quick-bottom.jpg) -->
+    <div class="mo-rolling">
+      <img src="./mo-quick-bottom.jpg" alt="1,783세대 대단지 4천만원대 내집마련">
+    </div>
+
+    <!-- 전화상담 & 방문예약 버튼 열 -->
+    <div class="mo-btn-group">
+      <a href="tel:1555-0031" class="btn-call">
+        <span>📞 전화상담</span>
+      </a>
+      <button type="button" class="btn-reserve" onclick="document.querySelector('#inquiry-box-mo')?.scrollIntoView({behavior:'smooth'})">
+        <span>📋 방문예약</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 간단한 폼 전송 스크립트 -->
+  <script>
+    function onFormSubmit(e) {
+      e.preventDefault();
+      alert("VIP 방문 예약 신청이 정상적으로 완료되었습니다.\n담당자가 확인 후 빠른 안내 도와드리겠습니다.");
+      e.target.reset();
+    }
+  </script>
+
 </body>
 </html>
