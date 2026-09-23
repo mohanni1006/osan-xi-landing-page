@@ -1,0 +1,436 @@
+// ============================================================================================================
+// 📌 Feather 아이콘 초기화
+(function(){
+  const replace = () => window.feather?.replace?.();
+
+  document.addEventListener('DOMContentLoaded', replace);   // 동적 DOM 삽입 대응
+  new MutationObserver(replace).observe(document.body, { childList: true, subtree: true });
+})();
+
+
+// ============================================================================================================
+// 📌 모바일 헤더 코드
+(function(){
+  const MOBILE_BREAK = 990;
+
+  const onReady = (fn) => {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn, { once:true });
+    else fn();
+  };
+
+  const findHeaderEl = () => document.querySelector('site-header .site-header') || document.querySelector('.site-header');
+
+  function bindHeader(headerEl){
+    if (!headerEl || headerEl.__hdrBound) return;
+    headerEl.__hdrBound = true;
+
+    const isMobile = () => window.innerWidth <= MOBILE_BREAK;
+
+    // ------- PC: hover open/close + focusout 접근성 -------
+    headerEl.addEventListener('mouseenter', ()=> headerEl.setAttribute('data-open','true'));
+    headerEl.addEventListener('mouseleave', ()=> headerEl.removeAttribute('data-open'));
+    headerEl.addEventListener('focusout', ()=> {
+      setTimeout(()=> { if (!headerEl.contains(document.activeElement)) headerEl.removeAttribute('data-open'); }, 0);
+    });
+
+    // ------- 단일 클릭 위임으로 MO 햄버거 & .col 동작 처리 -------
+    headerEl.addEventListener('click', (ev) => {
+      // 햄버거 토글 (버튼 내부/자식 클릭 모두 처리)
+      if (ev.target.closest('.menu_btn')) {
+        if (!isMobile()) return;
+        ev.preventDefault();
+        headerEl.classList.toggle('open');
+        return;
+      }
+
+      // mega 컬럼 관련: h4 > a 는 모바일에서 이동 막고 컬럼 토글
+      const h4Link = ev.target.closest('.mega .col h4 > a');
+      if (h4Link) {
+        if (!isMobile()) return; // PC는 기본 동작
+        ev.preventDefault(); ev.stopPropagation();
+        const col = h4Link.closest('.mega .col');
+        // 닫기 다른 컬럼
+        headerEl.querySelectorAll('.mega .col').forEach(c => { if (c !== col) c.classList.remove('mo-open'); });
+        col.classList.toggle('mo-open');
+        return;
+      }
+
+      // 컬럼 내부 빈영역 클릭 -> 토글 (단, depth2 링크 클릭은 무시)
+      const col = ev.target.closest('.mega .col');
+      if (col) {
+        if (!isMobile()) return;
+        if (ev.target.closest('.depth2 a')) return; // 2뎁스 링크는 이동
+        if (ev.target.closest('h4')) return;        // h4는 위에서 처리
+        headerEl.querySelectorAll('.mega .col').forEach(c => { if (c !== col) c.classList.remove('mo-open'); });
+        col.classList.toggle('mo-open');
+      }
+    });
+
+    // ------- 단일 resize 처리: 모바일->데스크탑 전환에서 초기화 -------
+    const onResize = () => {
+      if (!isMobile()) {
+        headerEl.classList.remove('open');
+        headerEl.querySelectorAll('.mega .col.mo-open').forEach(c => c.classList.remove('mo-open'));
+      }
+    };
+    window.addEventListener('resize', onResize);
+  }
+
+  // Try immediate bind, otherwise observe for 동적 렌더링 (웹컴포넌트 등)
+  onReady(() => {
+    const h = findHeaderEl();
+    if (h) { bindHeader(h); return; }
+    const mo = new MutationObserver((_, obs) => {
+      const h2 = findHeaderEl();
+      if (h2) { obs.disconnect(); bindHeader(h2); }
+    });
+    mo.observe(document.body, { childList:true, subtree:true });
+  });
+})();
+
+
+// ============================================================================
+// 📌팝업 닫기
+document.addEventListener('DOMContentLoaded', () => {
+  const wrap = document.querySelector('.popup_wrap');
+  if (!wrap) return;
+  const popup = wrap.querySelector('.popup');
+  const ul = popup?.querySelector('ul');
+
+  // 배경 클릭 → 팝업랩 전체 숨김
+  wrap.addEventListener('click', e => { if (e.target === wrap) wrap.style.display = 'none'; });
+
+  // 팝업 내부 클릭 전파 차단
+  popup?.addEventListener('click', e => e.stopPropagation());
+
+  // li 닫기 버튼: 해당 li 숨김 → 남은 li 없으면 팝업랩 숨김
+  popup?.querySelectorAll('.popup_close').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.preventDefault(); e.stopPropagation();
+      const li = btn.closest('li'); if (!li) return;
+      li.style.display = 'none';
+      const anyVisible = ul && Array.from(ul.children).some(c => c.offsetParent !== null && getComputedStyle(c).display !== 'none');
+      if (!anyVisible) wrap.style.display = 'none';
+    });
+  });
+
+  // "1일 동안 보지 않음" — 자정 기준(다음 자정까지)
+  const skip = popup?.querySelector('.popup_skip_oneday');
+  if (skip) {
+    const until = Number(localStorage.getItem('popup_hide_until') || 0);
+    if (until > Date.now()) { wrap.style.display = 'none'; return; }
+    skip.addEventListener('click', e => {
+      e.preventDefault(); e.stopPropagation();
+      const now = new Date();
+      const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1); // 다음 자정 00:00
+      localStorage.setItem('popup_hide_until', String(nextMidnight.getTime()));
+      wrap.style.display = 'none';
+    });
+  }
+});
+
+
+// ============================================================================================================
+//  📌 언론보도
+//  - li 클릭 시 .on 토글 (위임)
+//  - span 비었으면 .news-title 텍스트 복사
+
+(function(){
+  // jQuery 위임 (기존 유지)
+  $(document).on('click', '.news-board li', function () {
+    $(this).toggleClass('on');
+  });
+
+  // span 비었으면 title 텍스트로 보정
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".news-board li").forEach(li => {
+      const titleEl = li.querySelector(".news-title");
+      const spanEl  = li.querySelector("span");
+      if (!titleEl || !spanEl) return;
+
+      const titleText = titleEl.textContent.trim();
+      const spanText  = spanEl.textContent.trim();
+      if (!spanText && titleText) spanEl.textContent = titleText;
+    });
+  });
+})();
+
+
+// ============================================================================================================
+// 📌 공통 data-scroll 부드러운 스크롤 + 해시 복원
+// - [data-scroll] 클릭 시: 현재 페이지면 scrollIntoView, 아니면 index.html로 이동
+// - 페이지 로드 후 location.hash 있으면 해당 위치로 스크롤
+
+(function(){
+  document.addEventListener("click", (e) => {  // [data-scroll] 클릭 처리
+    const btn = e.target.closest("[data-scroll]");
+    if (!btn) return;
+
+    e.preventDefault();
+    const sel = btn.dataset.scroll;
+    if (!sel) return;
+
+    const targetEl = document.querySelector(sel);
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: "smooth" });
+    } else {
+      const base = "/index.html"; // 프로젝트 경로 맞춰 필요 시 조정
+      location.href = `${base}${sel}`;
+    }
+  });
+
+  // 해시 복원 (index 도착 후)
+  window.addEventListener("DOMContentLoaded", () => {
+    if (!location.hash) return;
+    const targetEl = document.querySelector(location.hash);
+    if (!targetEl) return;
+    setTimeout(() => targetEl.scrollIntoView({ behavior: "smooth" }), 1000);  // 지연값 
+  });
+})();
+
+
+
+// ===================================================================================================================================
+// 📌 모달 섹션(여러 동일 클래스 대응) / 트리거 / 트리거 존재 시 트리거로 열기 / 닫기버튼·배경·뒤로가기 버튼(안드로이드&IOS)
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".modal-section").forEach(section => {
+    const modalWrap = section.querySelector(".modal-wrap");
+    const closeBtn  = modalWrap?.querySelector(".modal-close");
+    const trigger   = section.querySelector(".modal-trigger"); // ✅ 트리거
+
+    if (!modalWrap || !closeBtn) return;
+
+    // ✅ 트리거가 있으면 섹션 커서를 기본(default)로
+    if (trigger) section.style.cursor = "default";
+
+    const open  = () => !modalWrap.classList.contains("open") && (modalWrap.classList.add("open"), history.pushState({__modal:true}, ""));
+    const close = () => modalWrap.classList.contains("open") && (modalWrap.classList.remove("open"), history.state?.__modal && history.back());
+
+    // ✅ 섹션 클릭 → 트리거가 있으면 트리거로만 열기, 없으면 기존처럼 섹션 전체로 열기
+    section.addEventListener("click", e => {
+      if (trigger) {
+        if (e.target.closest(".modal-trigger")) {
+          e.stopPropagation();
+          open();
+        }
+        // 트리거 외의 클릭은 무시
+      } else {
+        if (!modalWrap.contains(e.target)) open();
+      }
+    });
+
+    closeBtn.addEventListener("click", e => { e.stopPropagation(); close(); });          // 닫기 버튼
+    modalWrap.addEventListener("click", e => { if (e.target === modalWrap) close(); });  // 배경 클릭 시 닫기
+
+    ["popstate","pagehide"].forEach(ev =>                                                // 뒤로가기(popstate) & iOS pagehide → 열려있으면 닫기
+      window.addEventListener(ev, () => modalWrap.classList.remove("open"))
+    );
+  });
+});
+
+// ============================================================================================================
+// 📌 하단 퀵버튼 모달(말풍선) / 특정 위치 모달 / 닫기버튼, 배경, 뒤로가기 버튼
+
+document.addEventListener("DOMContentLoaded", () => {
+  const bubble    = document.querySelector(".mo_quick_bottom_Bubble");
+  const modalWrap = document.querySelector(".mo_quick_bottom_modal_wrap"); 
+  const modal     = document.querySelector(".mo_quick_bottom_modal"); 
+  const closeBtn  = document.querySelector(".mo_quick_bottom_modal_wrap_close");
+
+  if (!(bubble && modalWrap && modal && closeBtn)) return;
+
+  const open = () => {
+    if (!modalWrap.classList.contains("open")) {
+      modalWrap.classList.add("open");
+      history.pushState({ __modal: true, key: "footer" }, "");  // 뒤로가기를 위한 히스토리 엔트리 추가
+      setTimeout(() => closeBtn.focus?.(), 0); // 접근성: 최초 포커스 이동
+    }
+  };
+
+  const close = () => {
+    if (modalWrap.classList.contains("open")) {
+      modalWrap.classList.remove("open");
+      if (history.state && history.state.__modal) {  // 스택 되돌려서 popstate 누락 방지 (특히 iOS용)
+        history.back();
+      }
+    }
+  };
+  
+  bubble.addEventListener("click", open);  // 열기
+  closeBtn.addEventListener("click", close);  // 닫기 버튼
+  modalWrap.addEventListener("click", close);  // 배경 클릭 시 닫기
+  modal.addEventListener("click", (e) => e.stopPropagation());  // 내부 컨텐츠 클릭은 닫힘 방지
+
+  // 뒤로가기(popstate) 이벤트 → 열려 있으면 닫기
+  window.addEventListener("popstate", () => {
+    if (modalWrap.classList.contains("open")) {
+      modalWrap.classList.remove("open");
+    }
+  });
+
+  // iOS Safari 일부 케이스 보완 (앱 전환/뒤로가기 제스처)
+  window.addEventListener("pagehide", () => {
+    if (modalWrap.classList.contains("open")) {
+      modalWrap.classList.remove("open");
+    }
+  });
+});
+
+
+// ============================================================================================================
+// 📌 하단 롤링 슬라이드 (푸터 swiper)
+document.addEventListener('DOMContentLoaded', () => {
+  const SwiperBottomQuick = document.querySelector('.bottom-quick-banner');
+  if (!SwiperBottomQuick || !window.Swiper) return;   // 요소나 라이브러리 없으면 종료
+  if (SwiperBottomQuick.swiper) return;               // 이미 초기화 되었으면 중복 방지
+  
+  new Swiper(SwiperBottomQuick, {
+    loop: true,
+    slidesPerView: 1,
+    spaceBetween: 0,
+    autoplay: {
+      delay: 5000,
+      disableOnInteraction: false 
+    }
+  });
+});
+
+
+// ============================================================================================================
+// 📌 당겨보세요 풀 배너 (밀어서 영상)
+(function () {
+  const bind = () => {
+    const wrap = document.querySelector(".pull-banner");
+    if (!wrap || wrap.__pullBound) return false;
+    wrap.__pullBound = true;
+
+    const videoLayer = wrap.querySelector(".pull-video");
+    const textLayer = wrap.querySelector(".pull-text");
+    const badge = wrap.querySelector(".pull-badge");
+    const arrow = wrap.querySelector(".pull-arrow");
+    const closeBtn = wrap.querySelector(".pull-close");
+    const muteBtn = wrap.querySelector(".pull-mute");
+    const video = wrap.querySelector(".pull-video video");
+
+    const THUMB_HEIGHT = wrap.offsetHeight || 200; // CSS 높이를 기준값으로
+    const THRESHOLD = 70;
+    let startX = 0,
+      curX = 0,
+      dragging = false,
+      isOpen = false,
+      muted = true;
+
+    // 음소거 토글
+    muteBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      muted = !muted;
+      video.muted = muted;
+      muteBtn.textContent = muted ? "🔇" : "🔊";
+    });
+
+    // 영상 비율에 맞춰 배너 높이 계산
+    const getVideoHeight = () => {
+      if (!video.videoWidth || !video.videoHeight) return null;
+      return Math.round(
+        (video.videoHeight / video.videoWidth) * wrap.clientWidth,
+      );
+    };
+
+    const open = () => {
+      isOpen = true;
+      videoLayer.classList.add("open");
+      textLayer.classList.add("hidden");
+      badge.classList.add("hidden");
+      arrow.classList.add("hidden");
+      wrap.classList.remove("dragging", "grabbing");
+      video.play();
+      const h = getVideoHeight();
+      if (h) wrap.style.height = h + "px";
+    };
+
+    const close = () => {
+      isOpen = false;
+      videoLayer.classList.remove("open");
+      video.pause();
+      video.currentTime = 0;
+      wrap.style.height = THUMB_HEIGHT + "px";
+      textLayer.classList.remove("hidden");
+      setTimeout(() => {
+        badge.classList.remove("hidden");
+        arrow.classList.remove("hidden");
+      }, 200);
+    };
+
+    closeBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      close();
+    });
+
+    const onStart = (x) => {
+      if (isOpen) return;
+      startX = x;
+      curX = x;
+      dragging = true;
+      wrap.classList.add("grabbing", "dragging");
+    };
+    const onMove = (x) => {
+      if (dragging && !isOpen) curX = x;
+    };
+    const onEnd = () => {
+      if (!dragging || isOpen) return;
+      dragging = false;
+      wrap.classList.remove("grabbing", "dragging");
+      if (startX - curX >= THRESHOLD) open(); // 왼쪽으로 THRESHOLD 이상 당기면 열림
+    };
+
+    wrap.addEventListener("touchstart", (e) => onStart(e.touches[0].clientX), {
+      passive: true,
+    });
+    wrap.addEventListener("touchmove", (e) => onMove(e.touches[0].clientX), {
+      passive: true,
+    });
+    wrap.addEventListener("touchend", onEnd);
+    wrap.addEventListener("mousedown", (e) => onStart(e.clientX));
+    window.addEventListener("mousemove", (e) => {
+      if (dragging) onMove(e.clientX);
+    });
+    window.addEventListener("mouseup", onEnd);
+
+    return true;
+  };
+
+  // site-mo-body가 웹컴포넌트라 늦게 그려지므로 렌더링 대기
+  document.addEventListener("DOMContentLoaded", () => {
+    if (bind()) return;
+    const mo = new MutationObserver((_, obs) => {
+      if (bind()) obs.disconnect();
+    });
+    mo.observe(document.body, { childList: true, subtree: true });
+  });
+})();
+
+
+// ============================================================================================================
+// 🔝 맨 위로 가기 버튼 (#scrollTopBtn)
+
+(function(){
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest?.('#scrollTopBtn');
+    if (!btn) return;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+
+/*
+// ============================================================================================================
+// 📌 #db_box가 뷰포트의 NN% 만큼 들어오면 모바일 하단 퀵버튼 숨기기 (클래스 추가 방식) 
+document.addEventListener('DOMContentLoaded', () => {
+  const target = document.querySelector('#mo_quick_bottom');
+  const dbBox  = document.querySelector('#db_box');
+  if (!target || !dbBox) return;
+
+  new IntersectionObserver(([entry]) => {
+    target.classList.toggle('quick-bottom-hidden', entry.isIntersecting && entry.intersectionRatio >= 0.5);
+  }, { threshold: .5 }).observe(dbBox);  //NN % (50%이상 뷰포트 보이고 안보일때)
+});
+*/

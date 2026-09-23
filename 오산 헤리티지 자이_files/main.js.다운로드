@@ -1,0 +1,101 @@
+class SiteBody extends HTMLElement {
+  async connectedCallback(){
+    const { site } = await window.SiteData.get();
+
+    // 본문 내용은 여기서 구성
+    this.innerHTML = /* Html */`
+    <section>
+      <!-- ============================================================ 💻 PC 홈페이지 ============================================================ -->
+      <main class="home_pc">
+        <div class="home_title">
+          <img class="logo-color" src="img/logo-color.png" alt="로고" />
+          <p class="sub_title">병점역 생활권</p>
+          <p class="main_title">
+            1,783세대 1군 브랜드 대단지
+            <br>(1차) 계약금<b>1천만원 정액제</b>
+          </p>
+          <div class="txt_box">선착순 동·호 지정!</div>
+        </div>
+        <div class="pc-bg-wrap">
+          <img class="home_bg" src="img/pc-home.jpg" alt="pc메인이미지">
+        </div>
+      </main>
+
+      <!-- ============================================================ 📱 MO 홈페이지 ============================================================ -->
+<main class="home_mo">
+        <img src="img/mo-main/main-1.jpg" alt="" loading="eager">
+        <img src="img/mo-main/main-2.jpg" alt="" loading="eager">
+        <img src="img/mo-main/main-3.gif" alt="" loading="lazy">
+        <img src="img/mo-main/main-4.jpg" alt="" loading="lazy">
+        <img src="img/mo-main/main-5.jpg" alt="" loading="lazy">
+        <img src="img/mo-main/main-6.gif" alt="" loading="lazy">
+        <img src="img/mo-main/main-7.gif" alt="" loading="lazy">
+        <img src="img/mo-main/main-8.gif" alt="" loading="lazy">
+        <img src="img/mo-main/main-9-1.jpg" alt="" loading="lazy">
+        <img src="img/mo-main/main-9-2.jpg" alt="" loading="lazy">
+
+
+        <!-- 영상만 쓸경우 -->
+        <video autoplay loop muted playsinline poster="" loading="lazy">
+          <source src="img/mo-main/main-10.mp4">
+        </video>
+        
+
+        <!-- 💬 모달 트리거 영상 섹션 -->
+        <!-- 특정영역(modal-trigger)클릭 시, 모달 오픈 / style에서 크기 위치 수정 필요 / 위치·크기 설정후 "background:transparent"의 주석(/**/) 제거하기 -->
+        <section class="modal-section" style="display:none">
+          <img src="img/mo-main/main-6.gif" alt="" loading="lazy">
+          <button class="modal-trigger" style="left:32%; top:49%; width:29%; height: 10%; /*background:transparent*/" aria-label="모달 트리거"></button>
+          
+          <div class="modal-wrap">
+            <div class="" style="background:url(/img/quick/quick_bottom_bubble-modal-bg.jpg)">
+              <img src="img/quick/quick_bottom_bubble-modal-img.png" alt="영상 상단 꾸밈 타이틀 이미지">
+              <button class="modal-close"></button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 💬 모달 영상 섹션 -->
+        <section class="modal-section" style="display:none"> <!-- ✅ 보이기:block / 숨김:none -->
+          <img src="img/mo-main/main-5-1.gif" alt="" loading="lazy">
+          
+          <div class="modal-wrap">
+            <div class="" style="background:url(img/quick/quick_bottom_bubble-modal-bg.jpg)">
+              <img src="img/quick/quick_bottom_bubble-modal-img.png" alt="영상 상단 꾸밈 타이틀 이미지">
+              <video autoplay muted playsinline poster="" loading="lazy" style="padding:4vw">
+                <source src="img/quick/quick_bottom_bubble-modal-video.webm">
+              </video>
+              <button class="modal-close"></button>
+            </div>
+          </div>
+        </section>
+        
+        <!-- ✅ DB카트 -->
+        <div id="db_box">
+          <iframe src="https://${site.dbcartId}.dbcart.net/?dbcartapi=1" title="디비카트" height="750" scrolling="no"></iframe>
+        </div>
+      </main>
+
+
+      <!-- ==================================================== 🖼️ 팝업 / li 복붙 & img 링크 수정 ==================================================== -->
+      <div class="popup_wrap" style="display:none"> <!-- ✅ 보이기:flex / 숨김:none -->
+        <div class="popup">
+          <ul>
+            <li>
+              <img src="img/popup-img1.jpg" alt="popup1">
+              <button class="popup_close"><div></div></button>
+            </li>
+            <li>
+              <img src="img/popup-img2.jpg" alt="popup1">
+              <button class="popup_close"><div></div></button>
+            </li>
+          </ul>
+          <button class="popup_skip_oneday">1일 동안 보지 않음</button>
+        </div>
+      </div>
+
+    </section>
+    `;
+  }
+}
+customElements.define('site-body', SiteBody);

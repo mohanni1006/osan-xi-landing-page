@@ -1,0 +1,396 @@
+(function () {
+   /* 초기화 상태 */
+  let initialized = false;
+
+  /* 기능 초기화 */
+  function initializePerformancePc() {
+    if (initialized) return;
+    if (!document.querySelector(".performance-pc-wrap")) return;
+
+    initialized = true;
+    bindHeaderState();
+    bindSideFixedPanel();
+    bindTopButton();
+    bindSideToggleCta();
+    bindBottomToggleCta();
+    bindWingCategoryCta();
+    bindVideoWingCta();
+  }
+
+  document.addEventListener("performance-pc-ready", initializePerformancePc);
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializePerformancePc, { once: true });
+  } else {
+    initializePerformancePc();
+  }
+
+  /* =====================================================================================
+     스크롤 헤더 제어
+   * ===================================================================================== */
+  function bindHeaderState() {
+    let ticking = false;
+    let lastScrollY = window.scrollY;
+
+    function update() {
+      const header = document.querySelector(".site-header");
+      const main = document.querySelector(".performance-main");
+      if (!header || !main) return;
+
+      const headerRect = header.getBoundingClientRect();
+      const mainRect = main.getBoundingClientRect();
+      const onMain = mainRect.top < headerRect.bottom && mainRect.bottom > headerRect.top;
+      const currentY = window.scrollY;
+      const diff = currentY - lastScrollY;
+
+      header.classList.toggle("is-logo-white", onMain);
+
+      if (currentY <= 80 || diff < -8) {
+        header.classList.remove("pc-header-hidden");
+      } else if (diff > 8) {
+        header.classList.add("pc-header-hidden");
+      }
+
+      lastScrollY = currentY;
+    }
+
+    function requestUpdate() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        update();
+        ticking = false;
+      });
+    }
+
+    update();
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+    window.addEventListener("load", requestUpdate);
+  }
+
+  /* =====================================================================================
+     사이드 DB카트 고정
+   * ===================================================================================== */
+  function bindSideFixedPanel() {
+    const sectionWrap = document.querySelector(".performance-section-wrap");
+    const panel = document.querySelector(".performance-section-right");
+    if (!sectionWrap || !panel) return;
+
+    const update = () => {
+      const footer = document.querySelector("site-footer .site-footer");
+      const sectionStarted = window.scrollY > 0 && sectionWrap.getBoundingClientRect().top <= 0;
+      const footerTop = footer ? footer.getBoundingClientRect().top : window.innerHeight;
+      const offsetY = Math.min(0, footerTop - window.innerHeight);
+
+      panel.classList.toggle("is-fixed", sectionStarted);
+      panel.style.setProperty("--performance-side-offset-y", `${offsetY}px`);
+    };
+
+    update();
+    window.addEventListener("load", update);
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+  }
+
+  /* =====================================================================================
+     TOP 버튼
+   * ===================================================================================== */
+  function bindTopButton() {
+    const button = document.querySelector('[data-action="performance-scroll-top"]');
+    if (!button) return;
+
+    const update = () => {
+      button.classList.toggle("show", window.scrollY > 400);
+    };
+
+    button.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+  }
+
+  /* =====================================================================================
+     CTA 공통 이동
+   * ===================================================================================== */
+  function scrollToTarget(targetId) {
+    const target = document.getElementById(targetId);
+    if (!target) return;
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  /* =====================================================================================
+     사이드 토글형
+   * ===================================================================================== */
+  function bindSideToggleCta() {
+    const sidebar = document.querySelector(".quick-sidebar");
+    const toggle = sidebar?.querySelector(".quick-sidebar-toggle");
+    if (!sidebar || !toggle) return;
+
+    const open = () => {
+      sidebar.classList.add("open");
+      toggle.setAttribute("aria-expanded", "true");
+    };
+
+    const close = () => {
+      sidebar.classList.remove("open");
+      toggle.setAttribute("aria-expanded", "false");
+    };
+
+    const toggleSidebar = () => {
+      if (sidebar.classList.contains("open")) close();
+      else open();
+    };
+
+    toggle.addEventListener("click", toggleSidebar);
+    window.setTimeout(open, 5000);
+  }
+
+  /* =====================================================================================
+     하단 토글형
+   * ===================================================================================== */
+  function bindBottomToggleCta() {
+    const root = document.querySelector(".pc-bottom-toggle-original");
+    const openButton = root?.querySelector(".quick-bottom-btn");
+    const popup = root?.querySelector(".quick-popup");
+    const closeButton = root?.querySelector(".quick-popup-close");
+    if (!root || !openButton || !popup || !closeButton) return;
+
+    const open = () => {
+      popup.classList.add("open");
+      popup.setAttribute("aria-hidden", "false");
+      openButton.setAttribute("aria-expanded", "true");
+    };
+
+    const close = () => {
+      popup.classList.remove("open");
+      popup.setAttribute("aria-hidden", "true");
+      openButton.setAttribute("aria-expanded", "false");
+    };
+
+    openButton.addEventListener("click", open);
+    closeButton.addEventListener("click", close);
+    popup.addEventListener("click", (event) => {
+      if (event.target === popup) close();
+    });
+    window.setTimeout(open, 5000);
+  }
+
+  /* =====================================================================================
+     카테고리 윙배너형
+   * ===================================================================================== */
+  function bindWingCategoryCta() {
+    const wing = document.querySelector(".pc-bottom-wing");
+    const closeButton = wing?.querySelector(".pc-bottom-wing__close");
+    const badge = wing?.querySelector(".pc-bottom-wing__badge");
+    const links = [...(wing?.querySelectorAll(".pc-bottom-wing__nav a") || [])];
+    if (!wing || !closeButton || !badge) return;
+
+    closeButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      wing.classList.add("collapsed");
+    });
+
+    badge.addEventListener("click", () => {
+      if (wing.classList.contains("collapsed")) {
+        wing.classList.remove("collapsed");
+        return;
+      }
+
+      scrollToTarget(badge.dataset.target || "pc-bottom-db");
+    });
+
+    function getTargets() {
+      return links
+        .map((link) => {
+          const id = link.dataset.target || link.getAttribute("href")?.replace("#", "");
+          const element = id ? document.getElementById(id) : null;
+          return element ? { id, element, link } : null;
+        })
+        .filter(Boolean);
+    }
+
+    function setActive(id) {
+      links.forEach((link) => {
+        const currentId = link.dataset.target || link.getAttribute("href")?.replace("#", "");
+        const isActive = id && currentId === id;
+        link.classList.toggle("active", !!isActive);
+        link.closest("li")?.classList.toggle("active", !!isActive);
+      });
+    }
+
+    function updateActiveByScroll() {
+      const targets = getTargets();
+      if (!targets.length) {
+        setActive("");
+        return;
+      }
+
+      const checkY = window.innerHeight * 0.45;
+      const current = targets.find(({ element }) => {
+        const rect = element.getBoundingClientRect();
+        return rect.top <= checkY && rect.bottom >= checkY;
+      });
+      setActive(current?.id || "");
+    }
+
+    let ticking = false;
+    function requestActiveUpdate() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        updateActiveByScroll();
+        ticking = false;
+      });
+    }
+
+    links.forEach((link) => {
+      const id = link.dataset.target || link.getAttribute("href")?.replace("#", "");
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        setActive(id);
+        scrollToTarget(id);
+        window.setTimeout(requestActiveUpdate, 450);
+      });
+    });
+
+    window.addEventListener("scroll", requestActiveUpdate, { passive: true });
+    window.addEventListener("resize", requestActiveUpdate);
+    requestActiveUpdate();
+    window.setTimeout(requestActiveUpdate, 200);
+    window.setTimeout(requestActiveUpdate, 800);
+  }
+
+  /* =====================================================================================
+     영상 윙배너
+   * ===================================================================================== */
+  function bindVideoWingCta() {
+    const fragment = document.querySelector(".video-wing-set");
+    if (!fragment) return;
+
+    /* 요소 참조 및 드래그 상태값 */
+    const closeButton = fragment.querySelector(".video-wing-close");
+    const thumbButton = fragment.querySelector(".video-wing-thumb");
+    const thumbVideo = fragment.querySelector(".video-wing-thumb__video");
+    if (!closeButton || !thumbButton || !thumbVideo) return;
+    const dragState = {
+      active: false,
+      dragged: false,
+      suppressClick: false,
+      pointerId: null,
+      startX: 0,
+      startY: 0,
+      baseX: 0,
+      baseY: 0,
+      offsetX: 0,
+      offsetY: 0,
+    };
+
+    /* 축소 썸네일 위치 및 화면 이탈 제한 */
+    const setThumbOffset = (x, y) => {
+      dragState.offsetX = x;
+      dragState.offsetY = y;
+      fragment.style.setProperty("--video-wing-offset-x", `${x}px`);
+      fragment.style.setProperty("--video-wing-offset-y", `${y}px`);
+    };
+
+    const clampThumbOffset = (nextX, nextY) => {
+      if (!thumbButton) return { x: nextX, y: nextY };
+
+      const rect = thumbButton.getBoundingClientRect();
+      const deltaX = nextX - dragState.offsetX;
+      const deltaY = nextY - dragState.offsetY;
+      let x = nextX;
+      let y = nextY;
+
+      if (rect.left + deltaX < 0) x += -(rect.left + deltaX);
+      if (rect.right + deltaX > window.innerWidth) x -= rect.right + deltaX - window.innerWidth;
+      if (rect.top + deltaY < 0) y += -(rect.top + deltaY);
+      if (rect.bottom + deltaY > window.innerHeight) y -= rect.bottom + deltaY - window.innerHeight;
+
+      return { x, y };
+    };
+
+    const clampCurrentOffset = () => {
+      const next = clampThumbOffset(dragState.offsetX, dragState.offsetY);
+      setThumbOffset(next.x, next.y);
+    };
+
+    /* 윙배너 접기/다시 열기 */
+    const setCollapsed = (collapsed) => {
+      fragment.classList.toggle("is-collapsed", collapsed);
+      thumbButton.setAttribute("aria-hidden", String(!collapsed));
+
+      if (collapsed) {
+        clampCurrentOffset();
+        thumbVideo.play().catch(() => {});
+      } else {
+        thumbVideo.pause();
+        thumbVideo.currentTime = 0;
+        setThumbOffset(0, 0);
+      }
+    };
+
+    /* 닫기 및 드래그 이벤트 */
+    closeButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      setCollapsed(true);
+    });
+
+    thumbButton.addEventListener("pointerdown", (event) => {
+      if (!fragment.classList.contains("is-collapsed")) return;
+
+      dragState.active = true;
+      dragState.dragged = false;
+      dragState.pointerId = event.pointerId;
+      dragState.startX = event.clientX;
+      dragState.startY = event.clientY;
+      dragState.baseX = dragState.offsetX;
+      dragState.baseY = dragState.offsetY;
+      fragment.classList.add("is-dragging");
+      thumbButton.setPointerCapture(event.pointerId);
+    });
+
+    thumbButton.addEventListener("pointermove", (event) => {
+      if (!dragState.active || dragState.pointerId !== event.pointerId) return;
+
+      const deltaX = event.clientX - dragState.startX;
+      const deltaY = event.clientY - dragState.startY;
+      if (!dragState.dragged && Math.abs(deltaX) <= 6 && Math.abs(deltaY) <= 6) return;
+
+      dragState.dragged = true;
+      const next = clampThumbOffset(dragState.baseX + deltaX, dragState.baseY + deltaY);
+      setThumbOffset(next.x, next.y);
+    });
+
+    const stopDrag = (event) => {
+      if (!dragState.active || dragState.pointerId !== event.pointerId) return;
+      thumbButton.releasePointerCapture(event.pointerId);
+      dragState.active = false;
+      dragState.pointerId = null;
+      fragment.classList.remove("is-dragging");
+      if (dragState.dragged) dragState.suppressClick = true;
+    };
+
+    thumbButton.addEventListener("pointerup", stopDrag);
+    thumbButton.addEventListener("pointercancel", stopDrag);
+    thumbButton.addEventListener("click", (event) => {
+      if (dragState.suppressClick) {
+        dragState.suppressClick = false;
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+      setCollapsed(false);
+    });
+
+    /* 브라우저 크기 변경 대응 */
+    window.addEventListener("resize", () => {
+      if (fragment.classList.contains("is-collapsed")) clampCurrentOffset();
+    });
+
+    setCollapsed(false);
+  }
+})();

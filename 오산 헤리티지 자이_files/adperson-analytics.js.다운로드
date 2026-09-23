@@ -1,0 +1,1063 @@
+/* DC_POSTHOG_TRACKING_START */
+
+const scriptTag = document.currentScript || document.querySelector('script[src*="adperson-analytics.js"]');
+const SITE_ID = scriptTag?.dataset?.siteId || '';
+const SITE_KEY = scriptTag?.dataset?.siteKey || '';
+const DEFAULT_PANEL_ORIGIN = 'https://server.adperson.kr';
+const DEFAULT_INTEGRATION_ORIGIN = 'https://data.adperson.kr';
+const SCRIPT_ORIGIN = (() => {
+    try {
+        return new URL(scriptTag?.src || `${DEFAULT_PANEL_ORIGIN}/js/adperson-analytics.js`, location.href).origin;
+    } catch (error) {
+        return DEFAULT_PANEL_ORIGIN;
+    }
+})();
+const PANEL_ORIGIN = (() => {
+    const configuredOrigin = scriptTag?.dataset?.panelOrigin || scriptTag?.dataset?.apiOrigin || '';
+    const fallbackOrigin = ['https://cdn.adperson.kr', 'https://s3.adperson.kr'].includes(SCRIPT_ORIGIN)
+        ? DEFAULT_PANEL_ORIGIN
+        : SCRIPT_ORIGIN;
+
+    try {
+        return new URL(configuredOrigin || fallbackOrigin, location.href).origin;
+    } catch (error) {
+        return fallbackOrigin;
+    }
+})();
+const ANALYTICS_ORIGIN = (() => {
+    const configuredOrigin = scriptTag?.dataset?.collectionOrigin
+        || scriptTag?.dataset?.integrationOrigin
+        || DEFAULT_INTEGRATION_ORIGIN;
+
+    try {
+        return new URL(configuredOrigin, location.href).origin;
+    } catch (error) {
+        return DEFAULT_INTEGRATION_ORIGIN;
+    }
+})();
+const LEAD_FORM_ORIGINS = new Set([
+    DEFAULT_PANEL_ORIGIN,
+    PANEL_ORIGIN,
+    ANALYTICS_ORIGIN,
+    SCRIPT_ORIGIN
+]);
+const SITE_EVENT_ENDPOINT = `${ANALYTICS_ORIGIN}/api/public/site-events`;
+const SITE_EVENT_PIXEL_ENDPOINT = `${SITE_EVENT_ENDPOINT}/pixel`;
+const ANALYTICS_EVENT_ENDPOINT = `${ANALYTICS_ORIGIN}/api/public/v1/analytics/events`;
+const VISITOR_STORAGE_KEY = 'adperson_visitor_id';
+const SESSION_STORAGE_KEY = 'adperson_session_id';
+const VISITED_AT_STORAGE_KEY = 'adperson_visited_at';
+const ATTRIBUTION_STORAGE_KEY = 'adperson_attribution_v1';
+const ATTRIBUTION_STORAGE_TTL_MS = 2 * 60 * 60 * 1000;
+const TEL_MODAL_CONTEXT_STORAGE_KEY = 'adperson_tel_modal_context_v1';
+const TEL_MODAL_CONTEXT_TTL_MS = 30 * 60 * 1000;
+const ATTRIBUTION_PARAM_NAMES = [
+    'gclid',
+    'gbraid',
+    'wbraid',
+    'msclkid',
+    'fbclid',
+    'utm_source',
+    'utm_medium',
+    'utm_campaign',
+    'utm_content',
+    'utm_term',
+    'utm_etc'
+];
+const LEAD_FORM_ATTRIBUTION_PARAM_NAMES = ATTRIBUTION_PARAM_NAMES.filter(
+    key => key !== 'msclkid' && key !== 'utm_etc'
+);
+const DBCART_DEFAULT_UTM_VALUES = {
+    utm_source: 'direct',
+    utm_medium: 'none',
+    utm_campaign: 'not_set',
+    utm_content: 'not_set',
+    utm_term: 'not_set'
+};
+const memoryStore = {};
+
+(function() {
+    const script = document.createElement('script');
+    script.src = 'https://s3.vgoing.kr/vgo-tracker.js';
+    script.dataset.siteKey = SITE_KEY;
+    script.dataset.sitePage = 'id';
+    script.defer = true;
+    script.addEventListener('load', () => {
+        installVgoMirror();
+    });
+    document.head.appendChild(script);
+})();
+
+/* ==========================================
+   공통: throttle
+========================================== */
+function throttle(fn, wait) {
+    let last = 0;
+
+    return function (...args) {
+        const now = Date.now();
+
+        if (now - last >= wait) {
+            last = now;
+
+            return fn.apply(this, args);
+        }
+    };
+}
+
+function createId(prefix) {
+    const random = Math.random().toString(36).slice(2, 12);
+    const time = Date.now().toString(36);
+
+    return `${prefix}_${time}_${random}`;
+}
+
+function createUuid() {
+    try {
+        if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+            return window.crypto.randomUUID();
+        }
+    } catch (error) {
+        // UUID v4 형식의 난수 대체값을 생성합니다.
+    }
+
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, char => {
+        const random = Math.floor(Math.random() * 16);
+        const value = char === 'x' ? random : (random & 0x3) | 0x8;
+
+        return value.toString(16);
+    });
+}
+
+function rememberWithStorage(storage, key, factory) {
+    try {
+        const current = storage.getItem(key);
+        if (current) return current;
+
+        const next = factory();
+        storage.setItem(key, next);
+
+        return next;
+    } catch (error) {
+        if (!memoryStore[key]) {
+            memoryStore[key] = factory();
+        }
+
+        return memoryStore[key];
+    }
+}
+
+function getVisitorId() {
+    return rememberWithStorage(window.localStorage, VISITOR_STORAGE_KEY, () => createId('visitor'));
+}
+
+function getSessionId() {
+    return rememberWithStorage(window.sessionStorage, SESSION_STORAGE_KEY, () => createId('session'));
+}
+
+function getVisitedAt() {
+    return rememberWithStorage(window.sessionStorage, VISITED_AT_STORAGE_KEY, () => new Date().toISOString());
+}
+
+function rememberTelModalContext(context) {
+    const value = {
+        ...context,
+        expires_at: Date.now() + TEL_MODAL_CONTEXT_TTL_MS
+    };
+
+    try {
+        window.sessionStorage.setItem(TEL_MODAL_CONTEXT_STORAGE_KEY, JSON.stringify(value));
+    } catch (error) {
+        memoryStore[TEL_MODAL_CONTEXT_STORAGE_KEY] = value;
+    }
+
+    return value;
+}
+
+function getTelModalContext() {
+    let value = memoryStore[TEL_MODAL_CONTEXT_STORAGE_KEY] || null;
+
+    try {
+        const raw = window.sessionStorage.getItem(TEL_MODAL_CONTEXT_STORAGE_KEY);
+        value = raw ? JSON.parse(raw) : value;
+    } catch (error) {
+        // sessionStorage를 사용할 수 없으면 메모리 값만 사용합니다.
+    }
+
+    if (! value || Number(value.expires_at) <= Date.now()) {
+        try {
+            window.sessionStorage.removeItem(TEL_MODAL_CONTEXT_STORAGE_KEY);
+        } catch (error) {
+            // noop
+        }
+
+        delete memoryStore[TEL_MODAL_CONTEXT_STORAGE_KEY];
+
+        return null;
+    }
+
+    return value;
+}
+
+function getAttributionParams() {
+    const currentParams = new URLSearchParams(window.location.search || '');
+    const currentValues = {};
+
+    ATTRIBUTION_PARAM_NAMES.forEach(key => {
+        const value = currentParams.get(key);
+        if (value) currentValues[key] = value;
+    });
+
+    if (Object.keys(currentValues).length > 0) {
+        const stored = {
+            values: currentValues,
+            expires_at: Date.now() + ATTRIBUTION_STORAGE_TTL_MS
+        };
+
+        try {
+            window.sessionStorage.setItem(ATTRIBUTION_STORAGE_KEY, JSON.stringify(stored));
+        } catch (error) {
+            memoryStore[ATTRIBUTION_STORAGE_KEY] = stored;
+        }
+
+        return currentValues;
+    }
+
+    let stored = memoryStore[ATTRIBUTION_STORAGE_KEY] || null;
+
+    try {
+        const raw = window.sessionStorage.getItem(ATTRIBUTION_STORAGE_KEY);
+        stored = raw ? JSON.parse(raw) : stored;
+    } catch (error) {
+        // sessionStorage를 사용할 수 없으면 메모리 값만 사용합니다.
+    }
+
+    if (! stored || ! stored.values || Number(stored.expires_at) <= Date.now()) {
+        return {};
+    }
+
+    return stored.values;
+}
+
+function buildUrlParams() {
+    const params = new URLSearchParams(window.location.search || '');
+    const result = { ...getAttributionParams() };
+
+    params.forEach((value, key) => {
+        if (Object.prototype.hasOwnProperty.call(result, key)) {
+            result[key] = Array.isArray(result[key])
+                ? result[key].concat(value)
+                : [result[key], value];
+
+            return;
+        }
+
+        result[key] = value;
+    });
+
+    return result;
+}
+
+function buildDbcartIframeSrc(src) {
+    if (! src) return src;
+
+    try {
+        const value = String(src).trim();
+        const iframeSrc = /^[A-Za-z0-9-]+$/.test(value)
+            ? `https://${value}.dbcart.net/?dbcartapi=1`
+            : value;
+        const url = new URL(iframeSrc, window.location.href);
+        if (! /(^|\.)dbcart\.net$/i.test(url.hostname)) {
+            return src;
+        }
+
+        const attribution = getAttributionParams();
+
+        Object.entries(attribution).forEach(([key, value]) => {
+            if (! url.searchParams.has(key)) {
+                url.searchParams.set(key, value);
+            }
+        });
+
+        Object.entries(DBCART_DEFAULT_UTM_VALUES).forEach(([key, value]) => {
+            if (! url.searchParams.has(key)) {
+                url.searchParams.set(key, value);
+            }
+        });
+
+        if (! url.searchParams.has('utm_etc')) {
+            const trackingIdentifiers = ['gclid', 'gbraid', 'wbraid', 'msclkid', 'fbclid']
+                .filter(key => attribution[key])
+                .map(key => `${key}=${attribution[key]}`);
+
+            if (trackingIdentifiers.length > 0) {
+                url.searchParams.set('utm_etc', trackingIdentifiers.join('&'));
+            }
+        }
+
+        return url.toString();
+    } catch (error) {
+        return src;
+    }
+}
+
+// 템플릿에서 DBCart ID 또는 iframe 주소를 전달해 URL을 만들 때 사용할 수 있습니다.
+window.buildDbcartIframeSrc = buildDbcartIframeSrc;
+
+function buildLeadFormIframeSrc(src) {
+    if (! src) return src;
+
+    try {
+        const url = new URL(String(src).trim(), window.location.href);
+        if (! LEAD_FORM_ORIGINS.has(url.origin) || ! /^\/lead-forms\/[^/]+\/?$/.test(url.pathname)) {
+            return src;
+        }
+
+        const attribution = getAttributionParams();
+
+        LEAD_FORM_ATTRIBUTION_PARAM_NAMES.forEach(key => {
+            if (attribution[key] && ! url.searchParams.has(key)) {
+                url.searchParams.set(key, attribution[key]);
+            }
+        });
+
+        if (! url.searchParams.has('landing_url')) {
+            url.searchParams.set('landing_url', window.location.href);
+        }
+
+        if (document.referrer && ! url.searchParams.has('referrer')) {
+            url.searchParams.set('referrer', document.referrer);
+        }
+
+        return url.toString();
+    } catch (error) {
+        return src;
+    }
+}
+
+window.buildLeadFormIframeSrc = buildLeadFormIframeSrc;
+
+function decorateDbcartIframe(iframe) {
+    const src = iframe.getAttribute('src');
+    const decoratedSrc = buildDbcartIframeSrc(src);
+
+    if (decoratedSrc && decoratedSrc !== src) {
+        iframe.setAttribute('src', decoratedSrc);
+    }
+}
+
+function decorateLeadFormIframe(iframe) {
+    const src = iframe.getAttribute('src');
+    const decoratedSrc = buildLeadFormIframeSrc(src);
+
+    if (decoratedSrc && decoratedSrc !== src) {
+        iframe.setAttribute('src', decoratedSrc);
+    }
+}
+
+function decorateAttributionIframe(iframe) {
+    decorateDbcartIframe(iframe);
+    decorateLeadFormIframe(iframe);
+}
+
+function setupIframeAttributionBridge() {
+    const decorateAll = root => {
+        if (root instanceof HTMLIFrameElement) {
+            decorateAttributionIframe(root);
+        }
+
+        root.querySelectorAll?.('iframe[src]').forEach(decorateAttributionIframe);
+    };
+
+    decorateAll(document);
+
+    if (! window.MutationObserver || ! document.body) return;
+
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            if (mutation.type === 'attributes' && mutation.target instanceof HTMLIFrameElement) {
+                decorateAttributionIframe(mutation.target);
+                return;
+            }
+
+            mutation.addedNodes.forEach(node => {
+                if (node instanceof Element) {
+                    decorateAll(node);
+                }
+            });
+        });
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['src']
+    });
+}
+
+function setupLeadFormMessageBridge() {
+    window.addEventListener('message', event => {
+        const message = event.data;
+        if (! LEAD_FORM_ORIGINS.has(event.origin)
+            || ! message
+            || message.source !== 'adperson-lead-form'
+            || ! ['resize', 'submitted'].includes(message.type)) {
+            return;
+        }
+
+        const iframe = Array.from(document.querySelectorAll('iframe[src]')).find(candidate => {
+            if (candidate.contentWindow !== event.source) return false;
+
+            try {
+                const url = new URL(candidate.src, window.location.href);
+                const key = decodeURIComponent(url.pathname.split('/').filter(Boolean)[1] || '');
+
+                return LEAD_FORM_ORIGINS.has(url.origin)
+                    && /^\/lead-forms\/[^/]+\/?$/.test(url.pathname)
+                    && key === String(message.landing_key || '');
+            } catch (error) {
+                return false;
+            }
+        });
+
+        if (! iframe) return;
+
+        if (message.type === 'resize') {
+            const height = Math.max(320, Math.min(2400, Number(message.height) || 0));
+            if (height > 0) {
+                iframe.height = String(Math.ceil(height));
+                iframe.style.height = `${Math.ceil(height)}px`;
+            }
+
+            return;
+        }
+
+        window.dispatchEvent(new CustomEvent('adperson:lead-form:submitted', {
+            detail: { landingKey: String(message.landing_key || '') }
+        }));
+    });
+}
+
+function appendPayloadToForm(params, payload) {
+    Object.entries(payload).forEach(([key, value]) => {
+        if (value === undefined || value === null) return;
+
+        params.set(key, typeof value === 'object' ? JSON.stringify(value) : String(value));
+    });
+
+    return params;
+}
+
+function detectDeviceType() {
+    const ua = navigator.userAgent || '';
+
+    if (/ipad|tablet|playbook|silk/i.test(ua)) return 'tablet';
+    if (/mobi|iphone|ipod|android.*mobile|windows phone/i.test(ua)) return 'mobile';
+
+    return 'desktop';
+}
+
+function detectBrowser() {
+    const ua = navigator.userAgent || '';
+
+    if (/Edg\//.test(ua)) return 'Edge';
+    if (/SamsungBrowser/i.test(ua)) return 'Samsung Internet';
+    if (/Chrome\//.test(ua) && !/Chromium\//.test(ua)) return 'Chrome';
+    if (/Firefox\//.test(ua)) return 'Firefox';
+    if (/Safari\//.test(ua) && /Version\//.test(ua)) return 'Safari';
+    if (/OPR\//.test(ua) || /Opera/i.test(ua)) return 'Opera';
+
+    return 'Unknown';
+}
+
+function detectOs() {
+    const ua = navigator.userAgent || '';
+    const platform = navigator.platform || '';
+
+    if (/iPhone|iPad|iPod/i.test(ua)) return 'iOS';
+    if (/Android/i.test(ua)) return 'Android';
+    if (/Win/i.test(platform)) return 'Windows';
+    if (/Mac/i.test(platform)) return 'macOS';
+    if (/Linux/i.test(platform)) return 'Linux';
+
+    return 'Unknown';
+}
+
+function getEnvironmentPayload() {
+    return {
+        device_type: detectDeviceType(),
+        browser: detectBrowser(),
+        os: detectOs(),
+        viewport_width: window.innerWidth || document.documentElement.clientWidth || null,
+        viewport_height: window.innerHeight || document.documentElement.clientHeight || null,
+        language: navigator.language || ''
+    };
+}
+
+function collectAdTrackingIds() {
+    const ids = new Set();
+    const patterns = [
+        /\bGTM-[A-Z0-9]+\b/gi,
+        /\bG-[A-Z0-9]+\b/gi,
+        /\bAW-\d+\b/gi,
+        /\bGT-[A-Z0-9]+\b/gi,
+        /\bDC-\d+\b/gi
+    ];
+    const scan = value => {
+        if (!value) return;
+        const text = String(value);
+
+        patterns.forEach(pattern => {
+            const matches = text.match(pattern) || [];
+            matches.forEach(match => ids.add(match.toUpperCase()));
+        });
+    };
+
+    document.querySelectorAll('script[src], iframe[src]').forEach(el => {
+        scan(el.getAttribute('src'));
+    });
+    document.querySelectorAll('script:not([src])').forEach(el => {
+        scan((el.textContent || '').slice(0, 20000));
+    });
+
+    try {
+        if (window.google_tag_manager && typeof window.google_tag_manager === 'object') {
+            Object.keys(window.google_tag_manager).forEach(scan);
+        }
+    } catch (error) {
+        // noop
+    }
+
+    return Array.from(ids).slice(0, 30);
+}
+
+function normalizeTelHref(href) {
+    return (href || '').toLowerCase().startsWith('tel:') ? href.slice(4) : '';
+}
+
+function getRepresentativePhone() {
+    const telLink = document.querySelector('a[href^="tel:"], button[href^="tel:"]');
+    if (!telLink) return '';
+
+    return normalizeTelHref(telLink.getAttribute('href') || '');
+}
+
+function buildBasePayload(eventName, eventSource, extra = {}) {
+    const queryParams = buildUrlParams();
+    const adTrackingIds = collectAdTrackingIds();
+
+    return {
+        event: eventName,
+        event_source: eventSource,
+        client_event_id: createUuid(),
+        session_id: getSessionId(),
+        visitor_id: getVisitorId(),
+        site_id: SITE_ID,
+        site_key: SITE_KEY,
+        host: window.location.hostname,
+        representative_phone: extra.representative_phone || getRepresentativePhone(),
+        page: window.location.pathname,
+        page_url: window.location.href,
+        query_string: window.location.search,
+        query_params: queryParams,
+        referrer: document.referrer || '',
+        ad_click_id: queryParams.gclid || queryParams.gbraid || queryParams.wbraid || queryParams.msclkid || queryParams.fbclid || '',
+        gclid: queryParams.gclid || '',
+        gbraid: queryParams.gbraid || '',
+        wbraid: queryParams.wbraid || '',
+        msclkid: queryParams.msclkid || '',
+        fbclid: queryParams.fbclid || '',
+        ad_tracking_ids: adTrackingIds,
+        gtag_ids: adTrackingIds.filter(id => id.startsWith('G-') || id.startsWith('GT-') || id.startsWith('AW-')),
+        gtm_ids: adTrackingIds.filter(id => id.startsWith('GTM-')),
+        utm_source: queryParams.utm_source || '',
+        utm_medium: queryParams.utm_medium || '',
+        utm_campaign: queryParams.utm_campaign || '',
+        utm_content: queryParams.utm_content || '',
+        utm_term: queryParams.utm_term || '',
+        visited_at: getVisitedAt(),
+        occurred_at: new Date().toISOString(),
+        ...getEnvironmentPayload(),
+        ...extra
+    };
+}
+
+function urlHost(value) {
+    if (! value) return '';
+
+    try {
+        return new URL(value, window.location.href).hostname;
+    } catch (error) {
+        return '';
+    }
+}
+
+function toAnalyticsEvent(payload) {
+    return {
+        event_id: payload.client_event_id,
+        event_type: payload.event,
+        event_source: payload.event_source,
+        occurred_at: payload.occurred_at,
+        session_id: payload.session_id,
+        visitor_id: payload.visitor_id,
+        page_host: payload.host,
+        page_path: payload.page,
+        referrer_host: urlHost(payload.referrer),
+        utm_source: payload.utm_source,
+        utm_medium: payload.utm_medium,
+        utm_campaign: payload.utm_campaign,
+        utm_content: payload.utm_content,
+        utm_term: payload.utm_term,
+        gclid: payload.gclid,
+        gbraid: payload.gbraid,
+        wbraid: payload.wbraid,
+        fbclid: payload.fbclid,
+        device_type: payload.device_type
+    };
+}
+
+function sendAnalyticsEvents(payloads) {
+    const events = payloads.slice(0, 50).map(toAnalyticsEvent);
+    if (events.length === 0) return false;
+
+    const params = appendPayloadToForm(new URLSearchParams(), {
+        batch_id: createUuid(),
+        site_id: SITE_ID || undefined,
+        site_key: SITE_KEY || undefined,
+        events
+    });
+
+    try {
+        if (navigator.sendBeacon && navigator.sendBeacon(ANALYTICS_EVENT_ENDPOINT, params)) {
+            return true;
+        }
+    } catch (error) {
+        // keepalive 전송으로 이어집니다.
+    }
+
+    try {
+        fetch(ANALYTICS_EVENT_ENDPOINT, {
+            method: 'POST',
+            mode: 'cors',
+            keepalive: true,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+            },
+            body: params.toString()
+        }).catch(() => {});
+
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+function shouldSendInitialPageView(landingStatus) {
+    return landingStatus !== 'deleted';
+}
+
+function sendInitialPageView() {
+    const send = () => sendAnalyticsEvents([
+        buildBasePayload('page_view', 'script_load')
+    ]);
+    const landingState = window.__adpersonLandingState;
+
+    if (! landingState || typeof landingState.then !== 'function') {
+        if (shouldSendInitialPageView(landingState)) send();
+
+        return;
+    }
+
+    Promise.resolve(landingState)
+        .then(status => {
+            if (shouldSendInitialPageView(status)) send();
+        })
+        .catch(send);
+}
+
+function sendEventPixel(params) {
+    try {
+        const image = new Image();
+        image.src = `${SITE_EVENT_PIXEL_ENDPOINT}?${params.toString()}`;
+    } catch (error) {
+        // noop
+    }
+}
+
+function sendEventToPanel(payload) {
+    const params = appendPayloadToForm(new URLSearchParams(), payload);
+    let beaconQueued = false;
+
+    try {
+        beaconQueued = Boolean(
+            navigator.sendBeacon && navigator.sendBeacon(SITE_EVENT_ENDPOINT, params)
+        );
+    } catch (error) {
+        // keepalive 전송으로 이어집니다.
+    }
+
+    if (beaconQueued) return;
+
+    try {
+        fetch(SITE_EVENT_ENDPOINT, {
+            method: 'POST',
+            mode: 'no-cors',
+            keepalive: true,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+            },
+            body: params.toString()
+        }).catch(() => {
+            if (!beaconQueued) sendEventPixel(params);
+        });
+    } catch (error) {
+        if (!beaconQueued) sendEventPixel(params);
+    }
+}
+
+function normalizeVgoProperties(properties) {
+    if (!properties || typeof properties !== 'object' || Array.isArray(properties)) {
+        return {
+            vgo_value: properties === undefined || properties === null ? '' : String(properties)
+        };
+    }
+
+    return { ...properties };
+}
+
+function installVgoMirror() {
+    try {
+        if (!window.vgo || typeof window.vgo.track !== 'function' || window.vgo.__adpersonMirrorInstalled) {
+            return false;
+        }
+
+        const originalTrack = window.vgo.track.bind(window.vgo);
+
+        window.vgo.track = function (eventName, properties = {}) {
+            const result = originalTrack(eventName, properties);
+
+            try {
+                const extra = normalizeVgoProperties(properties);
+                const source = extra.event_source || extra.eventSource || 'vgo_track';
+                trackSiteEvent(String(eventName || extra.event || 'vgo_event'), source, extra);
+            } catch (error) {
+                // VGO 저장 자체를 막지 않기 위해 복제 저장 오류는 무시합니다.
+            }
+
+            return result;
+        };
+
+        window.vgo.__adpersonMirrorInstalled = true;
+
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+function setupVgoMirror() {
+    if (installVgoMirror()) return;
+
+    let attempts = 0;
+    const timer = window.setInterval(() => {
+        attempts += 1;
+
+        if (installVgoMirror() || attempts >= 50) {
+            window.clearInterval(timer);
+        }
+    }, 200);
+}
+
+function trackWithVgo(eventName, payload) {
+    try {
+        if (window.vgo && typeof window.vgo.track === 'function') {
+            window.vgo.track(eventName, payload);
+
+            return true;
+        }
+    } catch (error) {
+        // 사이트 동작을 막지 않기 위해 분석 오류는 무시합니다.
+    }
+
+    return false;
+}
+
+function trackSiteEvent(eventName, eventSource, extra = {}, options = {}) {
+    const payload = buildBasePayload(eventName, eventSource, extra);
+    if (eventName === 'modal_open_click') return payload;
+
+    const shouldSendToPanel = eventName === 'tel_click';
+    const canMirrorThroughVgo = options.vgo === true
+        && shouldSendToPanel
+        && window.vgo
+        && window.vgo.__adpersonMirrorInstalled === true;
+
+    if (options.vgo === true) {
+        const trackedWithVgo = trackWithVgo(eventName, payload);
+
+        if (trackedWithVgo && canMirrorThroughVgo) {
+            return payload;
+        }
+    }
+
+    if (!shouldSendToPanel) {
+        return payload;
+    }
+
+    sendEventToPanel(payload);
+    sendAnalyticsEvents([payload]);
+
+    return payload;
+}
+
+function getTelHref(el) {
+    const href = el.dataset.telModal || el.getAttribute('href') || '';
+
+    if (!href.startsWith('#')) return href;
+
+    const modal = document.getElementById(href.slice(1));
+
+    return modal?.querySelector('a[href^="tel:"], button[href^="tel:"]')
+        ?.getAttribute('href') || href;
+}
+
+function isTelModalTrigger(el) {
+    const href = (el.getAttribute('href') || '').trim().toLowerCase();
+    const hasExplicitMarker = el.classList?.contains('tel-modal-open')
+        || el.classList?.contains('modal_open_click')
+        || Boolean((el.dataset.telModal || '').trim())
+        || href.startsWith('#tel-modal');
+
+    return Boolean(
+        hasExplicitMarker
+        || ((el.dataset.clickLabel || '').trim() && !href.startsWith('tel:'))
+    );
+}
+
+function buildTelClickExtra(el, modalContext = null) {
+    const href = el.getAttribute('href') || '';
+    const phone = normalizeTelHref(href);
+    const dataLocation = (el.dataset.location || modalContext?.data_location || '').trim();
+    const telClickLabel = (modalContext?.tel_click_label || '').trim()
+        || (el.dataset.telLabel || '').trim()
+        || dataLocation
+        || (el.getAttribute('aria-label') || '').trim()
+        || el.textContent.trim();
+
+    return {
+        href,
+        phone,
+        representative_phone: phone || getRepresentativePhone(),
+        label: telClickLabel,
+        data_location: dataLocation,
+        modal_open_label: modalContext?.modal_open_label || '',
+        tel_click_label: telClickLabel
+    };
+}
+
+function buildTelModalOpenExtra(el) {
+    const href = getTelHref(el);
+    const phone = normalizeTelHref(href);
+    const dataLocation = (el.dataset.location || '').trim();
+    const modalOpenLabel = (el.dataset.clickLabel || '').trim()
+        || (el.dataset.modalOpenLabel || '').trim()
+        || dataLocation;
+    const telClickLabel = (el.dataset.telLabel || '').trim();
+
+    return {
+        href,
+        phone,
+        representative_phone: phone || getRepresentativePhone(),
+        label: modalOpenLabel,
+        data_location: dataLocation,
+        modal_open_label: modalOpenLabel,
+        tel_click_label: telClickLabel
+    };
+}
+
+let hasScrolled90 = false;
+let currentMode = 'unknown'; // 'normal' | 'fullpage'
+
+function trackScroll90(extra = {}) {
+    // 패널 API에는 scroll_90 저장하지 않습니다.
+    // trackSiteEvent('scroll_90', 'scroll_depth', extra);
+}
+
+/* ==========================================
+   NORMAL 모드: 문서 스크롤 기반
+========================================== */
+const captureScrollDepthNormal = throttle(() => {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    if (scrollHeight <= 0) return;
+
+    const percent = Math.min(100, Math.round((scrollTop / scrollHeight) * 100));
+
+    if (!hasScrolled90 && percent >= 90) {
+        hasScrolled90 = true;
+        trackScroll90({
+            scroll_depth: percent,
+            scroll_mode: 'normal'
+        });
+    }
+}, 800);
+
+/* ==========================================
+   FULLPAGE 모드: 섹션 active 클래스 기반
+========================================== */
+function initFullpageScrollTracking() {
+    const container = document.querySelector('#fullpage');
+    if (!container) return false;
+
+    let sections = Array.from(container.querySelectorAll('.section'));
+    if (!sections.length) return false;
+
+    let lastIndex = -1;
+
+    const findActiveIndex = () => {
+        sections = Array.from(container.querySelectorAll('.section'));
+
+        return sections.findIndex(sec => sec.classList.contains('active'));
+    };
+
+    const handleActiveChange = () => {
+        const idx = findActiveIndex();
+        if (idx === -1 || idx === lastIndex) return;
+        lastIndex = idx;
+
+        const total = sections.length;
+        const percent = total > 1 ? Math.round((idx / (total - 1)) * 100) : 100;
+
+        if (percent >= 90 && !hasScrolled90) {
+            hasScrolled90 = true;
+            trackScroll90({
+                scroll_depth: percent,
+                scroll_mode: 'fullpage',
+                section_index: idx,
+                section_count: total
+            });
+        }
+    };
+
+    const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+            if (mutation.type === 'attributes'
+                && mutation.attributeName === 'class'
+                && mutation.target.classList.contains('section')) {
+                handleActiveChange();
+                break;
+            }
+        }
+    });
+
+    sections.forEach(sec => observer.observe(sec, { attributes: true, attributeFilter: ['class'] }));
+    handleActiveChange();
+
+    return true;
+}
+
+/* ==========================================
+   FULLPAGE DOM 존재하는지 감지해서 모드 전환
+========================================== */
+function setupFullpageDetector() {
+    const tryInit = () => {
+        const hasFullpage = document.querySelector('#fullpage .section.fp-section')
+            || document.querySelector('#fullpage .section')
+            || document.body.classList.contains('fp-enabled');
+
+        if (!hasFullpage) return false;
+
+        if (currentMode === 'normal') {
+            window.removeEventListener('scroll', captureScrollDepthNormal);
+        }
+
+        currentMode = 'fullpage';
+        initFullpageScrollTracking();
+
+        return true;
+    };
+
+    if (tryInit()) return;
+
+    const observer = new MutationObserver(() => {
+        if (tryInit()) {
+            observer.disconnect();
+        }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+}
+
+/* ==========================================
+   전화 모달 문맥 및 실제 tel: 클릭 추적
+========================================== */
+function setupTelModalContext() {
+    document.addEventListener('click', event => {
+        const el = event.target.closest?.(
+            '[data-click-label], .tel-modal-open[data-location], '
+            + '.modal_open_click[data-modal-open-label], .modal_open_click[data-location], '
+            + '[href^="#tel-modal"][data-location]'
+        );
+        if (!el || !isTelModalTrigger(el)) return;
+
+        const extra = buildTelModalOpenExtra(el);
+        if (!extra.modal_open_label) return;
+
+        rememberTelModalContext({
+            data_location: extra.data_location,
+            modal_open_label: extra.modal_open_label,
+            tel_click_label: extra.tel_click_label,
+            href: extra.href,
+            phone: extra.phone
+        });
+    });
+}
+
+function setupTelTracking() {
+    document.addEventListener('click', event => {
+        const el = event.target.closest?.('a[href^="tel:"], button[href^="tel:"]');
+        if (!el || isTelModalTrigger(el)) return;
+
+        const isModalPhoneClick = el.classList.contains('modal_phone_click')
+            || el.classList.contains('tel-confirm-call');
+
+        trackSiteEvent(
+            'tel_click',
+            isModalPhoneClick ? 'modal_phone_click' : 'tel_link',
+            buildTelClickExtra(el, isModalPhoneClick ? getTelModalContext() : null),
+            { vgo: true }
+        );
+    });
+}
+
+/* ==========================================
+   초기 실행
+========================================== */
+function initAdpersonAnalytics() {
+    if (window.__adpersonAnalyticsInstalled) return;
+    window.__adpersonAnalyticsInstalled = true;
+
+    setupVgoMirror();
+    setupIframeAttributionBridge();
+    setupLeadFormMessageBridge();
+
+    // 영업의신 랜딩페이지는 guard의 운영 상태 확인 후 삭제 상태만 제외합니다.
+    // guard를 사용하지 않는 기존 사이트는 즉시 전송하는 기존 동작을 유지합니다.
+    sendInitialPageView();
+
+    // currentMode = 'normal';
+    // window.addEventListener('scroll', captureScrollDepthNormal);
+
+    // setupFullpageDetector();
+    setupTelModalContext();
+    setupTelTracking();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAdpersonAnalytics);
+} else {
+    initAdpersonAnalytics();
+}
+
+/* DC_POSTHOG_TRACKING_END */
