@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>오산 헤리티지 자이 | 공식 분양상담센터</title>
+  <title>오산 헤리티지 자이 | 견본주택 공식 분양상담센터</title>
 
-  <!-- 메타 태그 / SEO -->
-  <meta name="description" content="1,783세대 브랜드 대단지 오산 헤리티지 자이, 500만원 계약, 실시간 분양가 및 잔여세대 전화상담">
+  <!-- 메타 태그 / SEO 최적화 -->
+  <meta name="description" content="1,783세대 브랜드 대단지 오산 헤리티지 자이, 계약금 500만원 정액제, 견본주택 방문 안내 및 잔여세대 실시간 전화상담 1555-0031">
   <meta property="og:type" content="website">
   <meta property="og:title" content="오산 헤리티지 자이 - 공식 분양상담센터">
-  <meta property="og:description" content="동탄생활권 1군 브랜드 대단지! 500만원 계약 가능 | 24시간 전화상담 1555-0031">
+  <meta property="og:description" content="동탄생활권 1군 브랜드 대단지! 500만원 계약 가능 | 24시간 실시간 전화상담 1555-0031">
   <meta property="og:image" content="./main-img.jpg">
 
   <style>
@@ -34,12 +34,14 @@
       width: 100%;
       height: 66px;
       background: rgba(13, 17, 23, 0.96);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       z-index: 1000;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 20px;
+      padding: 0 24px;
     }
     .header-logo {
       display: flex;
@@ -55,12 +57,12 @@
       color: #fff;
       font-size: 0.85rem;
       font-weight: 900;
-      padding: 2px 7px;
+      padding: 2px 8px;
       border-radius: 4px;
     }
     .nav-bar {
       display: flex;
-      gap: 20px;
+      gap: 22px;
     }
     .nav-bar a {
       color: #cbd5e1;
@@ -72,8 +74,12 @@
       color: #38bdf8;
     }
     .header-tel-btn img {
-      width: 110px;
+      width: 112px;
       height: auto;
+      transition: transform 0.15s ease-in-out;
+    }
+    .header-tel-btn:hover img {
+      transform: scale(1.04);
     }
 
     /* ================= 2컬럼 레이아웃 (PC) ================= */
@@ -110,13 +116,13 @@
       z-index: 100;
       text-align: center;
     }
-    .side-panel .badge {
+    .side-panel .badge-live {
       display: inline-block;
       background: #dc2626;
       color: #fff;
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       font-weight: 800;
-      padding: 4px 10px;
+      padding: 4px 12px;
       border-radius: 20px;
       margin-bottom: 12px;
       letter-spacing: -0.3px;
@@ -129,9 +135,9 @@
       letter-spacing: -0.5px;
     }
     .side-panel p.sub {
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       color: #94a3b8;
-      margin-bottom: 22px;
+      margin-bottom: 20px;
       line-height: 1.5;
     }
     
@@ -139,7 +145,7 @@
       background: #0b111e;
       border: 2px solid #2563eb;
       border-radius: 12px;
-      padding: 20px 14px;
+      padding: 18px 12px;
       margin-bottom: 18px;
     }
     .direct-call-box span {
@@ -151,7 +157,7 @@
     }
     .direct-call-box a {
       display: block;
-      font-size: 2.1rem;
+      font-size: 2.15rem;
       font-weight: 900;
       color: #facc15;
       letter-spacing: 1px;
@@ -164,19 +170,19 @@
     .info-list {
       list-style: none;
       text-align: left;
-      background: rgba(11, 17, 30, 0.6);
+      background: rgba(11, 17, 30, 0.65);
       border: 1px solid #1e293b;
       border-radius: 10px;
       padding: 14px 16px;
       margin-bottom: 20px;
-      font-size: 0.82rem;
+      font-size: 0.84rem;
       color: #cbd5e1;
     }
     .info-list li {
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
     .info-list li:last-child { margin-bottom: 0; }
     .info-list li::before {
@@ -196,10 +202,11 @@
       font-weight: 900;
       text-align: center;
       box-shadow: 0 4px 14px rgba(220, 38, 38, 0.4);
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, transform 0.1s;
     }
     .btn-call-large:hover {
       opacity: 0.92;
+      transform: translateY(-2px);
     }
 
     .btn-sms-side {
@@ -225,7 +232,7 @@
     .footer {
       background: #080c14;
       color: #64748b;
-      padding: 35px 20px 110px 20px;
+      padding: 35px 20px 115px 20px;
       border-top: 1px solid #1e293b;
       font-size: 0.8rem;
       line-height: 1.7;
@@ -247,7 +254,7 @@
       border-top: 1px solid #1e293b;
       padding: 8px 12px;
       z-index: 999;
-      box-shadow: 0 -4px 15px rgba(0,0,0,0.5);
+      box-shadow: 0 -4px 15px rgba(0,0,0,0.6);
     }
     .mo-bubble {
       max-width: 460px;
@@ -304,7 +311,7 @@
       }
       .top-header {
         height: 60px;
-        padding: 0 14px;
+        padding: 0 16px;
       }
       .nav-bar {
         display: none;
@@ -327,85 +334,85 @@
     
     <nav class="nav-bar">
       <a href="#hero">처음으로</a>
-      <a href="#benefit">특장점</a>
+      <a href="#benefit">4대특장점</a>
       <a href="#summary">사업개요</a>
       <a href="#premium">프리미엄</a>
       <a href="#interior">인테리어</a>
-      <a href="tel:1555-0031" style="color: #facc15;">전화상담</a>
+      <a href="tel:1555-0031" style="color: #facc15; font-weight: 700;">📞 1555-0031</a>
     </nav>
 
-    <!-- 우측 헤더 전화 배너 (클릭 시 즉시 통화 연결) -->
+    <!-- 우측 상단 골드 전화상담 배너 (mo-header-tel.gif) -->
     <a href="tel:1555-0031" class="header-tel-btn">
       <img src="./mo-header-tel.gif" alt="전화상담 1555-0031">
     </a>
   </header>
 
-  <!-- 2. 본문 2컬럼 레이아웃 -->
+  <!-- 2. 본문 메인 레이아웃 -->
   <div class="container">
-    <div class="main-content">
+    <main class="main-content">
 
-      <!-- ① 상단 메인 히어로 -->
+      <!-- ① 메인 히어로 배너 (동탄생활권 1군 브랜드 500만원 계약가능) -->
       <section class="img-wrap" id="hero">
-        <img src="./main-img.jpg" alt="오산 헤리티지 자이 500만원 계약가능">
+        <img src="./main-img.jpg" alt="오산 헤리티지 자이 500만원으로 계약가능 1군 브랜드아파트">
       </section>
 
-      <!-- ② 핵심 4대 특장점 -->
+      <!-- ② SPECIAL BENEFIT 4대 특장점 -->
       <section class="img-wrap" id="benefit">
-        <img src="./benefit.png" alt="SPECIAL BENEFIT 4 - 병점 동탄 더블생활권">
+        <img src="./benefit.png" alt="SPECIAL BENEFIT 4 - 병점 동탄 더블생활권, 초등학교 안심학세권, 강남 20분대 GTX-C, 스카이라운지 명품 커뮤니티">
       </section>
 
-      <!-- ③ 직주근접 띠배너 01 -->
+      <!-- ③ 직주근접 띠배너 01 (삼성전자 캠퍼스 직주근접) -->
       <section class="img-wrap">
-        <img src="./banner01.jpg" alt="삼성전자 캠퍼스 직주근접 1,783세대">
+        <img src="./banner01.jpg" alt="삼성전자 캠퍼스 직주근접 1,783세대 대단지 500만원 계약가능">
       </section>
 
-      <!-- ④ 사업개요 상세표 -->
+      <!-- ④ 사업개요 상세표 (1BL, 2BL 총 1,783세대) -->
       <section class="img-wrap" id="summary">
-        <img src="./summary.jpg" alt="사업개요 1BL 2BL 공급규모 총 1,783세대">
+        <img src="./summary.jpg" alt="오산 양산4지구 1BL 및 2BL 사업개요 공급규모 1,783세대 상세표">
       </section>
 
-      <!-- ⑤ 프리미엄 조감도 & 혜택 -->
+      <!-- ⑤ 프리미엄 조감도 & 100만원 상품권 증정 혜택 -->
       <section class="img-wrap" id="premium">
-        <img src="./landing_top_144686_1789021183_0_62512015.jpg" alt="선착순 계약시 100만원 상품권 증정">
+        <img src="./landing_top_144686_1789021183_0_62512015.jpg" alt="강남 20분대 역세권, 4천만원대로 내집마련, 선착순 계약시 100만원 상품권 증정">
       </section>
 
-      <!-- ⑥ 스카이라운지 커뮤니티 띠배너 03 -->
+      <!-- ⑥ 커뮤니티 띠배너 03 (26층 스카이라운지, 단지 내 사우나) -->
       <section class="img-wrap">
-        <img src="./banner03.jpg" alt="26층 스카이라운지 커뮤니티 단지 내 사우나">
+        <img src="./banner03.jpg" alt="26층 전망 스카이라운지 커뮤니티 단지 내 사우나 및 키즈도서관 운영">
       </section>
 
-      <!-- ⑦ 인테리어 갤러리 -->
+      <!-- ⑦ 세련된 인테리어 갤러리 -->
       <section class="img-wrap" id="interior">
-        <img src="./interior.jpg" alt="세련된 감각으로 완성한 인테리어 갤러리">
+        <img src="./interior.jpg" alt="오산 헤리티지 자이 거실 주방 침실 드레스룸 인테리어 갤러리">
       </section>
 
-    </div>
+    </main>
 
     <!-- 3. PC 전용 우측 고정 다이렉트 통화 패널 -->
     <aside class="side-panel">
-      <span class="badge">실시간 동·호수 상담</span>
+      <span class="badge-live">선착순 동·호지정 중</span>
       <h3>공식 분양상담센터</h3>
-      <p class="sub">견본주택 위치 안내 및 잔여세대 문의<br>전문 상담사가 실시간으로 안내합니다.</p>
+      <p class="sub">견본주택 위치 및 잔여세대 실시간 안내<br>전문 상담사가 친절히 안내해 드립니다.</p>
 
       <div class="direct-call-box">
-        <span>터치/클릭 시 즉시 전화 연결</span>
+        <span>클릭 시 직통 전화 연결</span>
         <a href="tel:1555-0031">1555-0031</a>
       </div>
 
       <ul class="info-list">
-        <li>계약금 500만원 정액제 상담</li>
+        <li>계약금 500만원 정액제 분양혜택</li>
         <li>잔여 로얄동·호수 실시간 배정</li>
-        <li>견본주택 오시는 길 문자 발송</li>
-        <li>상담사 다이렉트 1:1 매칭</li>
+        <li>견본주택 내비게이션 주소 문자 발송</li>
+        <li>전문 상담사 1:1 다이렉트 상담</li>
       </ul>
 
       <a href="tel:1555-0031" class="btn-call-large">
         📞 지금 바로 전화상담
       </a>
 
-      <!-- 문자 상담 버튼 (PC/태블릿 등 문자앱 연동) -->
-      <a href="sms:1555-0031?body=오산 헤리티지 자이 분양가 및 모델하우스 위치 문의드립니다." class="btn-sms-side">
-        💬 견본주택 위치 문자 전송받기
+      <!-- 클릭 시 문자앱 실행 -->
+      <a href="sms:1555-0031?body=오산 헤리티지 자이 모델하우스 위치 및 분양가 문의드립니다." class="btn-sms-side">
+        💬 모델하우스 위치 문자받기
       </a>
     </aside>
   </div>
@@ -415,30 +422,30 @@
     <div class="footer-inner">
       <p><strong>오산 헤리티지 자이 견본주택 공식 분양안내관</strong></p>
       <p>사업지: 경기도 오산시 양산동 223번지 일원(1BL) / 양산동 328-2번지 일원(2BL)</p>
-      <p>분양문의 직통: <a href="tel:1555-0031" style="color: #facc15; font-weight: bold;">1555-0031</a> (연중무휴 상담 가능)</p>
-      <p style="margin-top: 10px; color: #475569;">※ 본 웹사이트에 수록된 조감도, 단지배치도, 이미지 등은 소비자의 이해를 돕기 위한 것으로 실제와 차이가 있을 수 있습니다.</p>
+      <p>분양문의 직통: <a href="tel:1555-0031" style="color: #facc15; font-weight: bold;">1555-0031</a> (연중무휴 24시간 상담접수)</p>
+      <p style="margin-top: 10px; color: #475569;">※ 본 웹사이트에 수록된 투시도, 조감도, 단지배치도 및 이미지는 소비자의 이해를 돕기 위한 것으로 실제 시공 시 차이가 있을 수 있습니다.</p>
       <p style="color: #475569;">Copyright &copy; 2026 오산 헤리티지 자이. All Rights Reserved.</p>
     </div>
   </footer>
 
-  <!-- 5. 모바일 플로팅 하단바 (전화 + 문자 유도) -->
+  <!-- 5. 모바일 플로팅 하단바 -->
   <div class="mo-bar">
-    <!-- 파격 조건변경 말풍선 -->
+    <!-- 파격 조건변경 기차 말풍선 (quick_bottom_bubble.jpg) -->
     <div class="mo-bubble">
-      <img src="./quick_bottom_bubble.jpg" alt="파격 조건변경 강남 20분대">
+      <img src="./quick_bottom_bubble.jpg" alt="파격 조건변경 강남 20분대 1호선 동탄트램 GTX-C 병점역">
     </div>
 
-    <!-- 롤링 카피 배너 -->
+    <!-- 하단 롤링 2단 텍스트 배너 (mo-quick-bottom.jpg) -->
     <div class="mo-rolling">
-      <img src="./mo-quick-bottom.jpg" alt="1,783세대 대단지 4천만원대 내집마련">
+      <img src="./mo-quick-bottom.jpg" alt="1,783세대 대단지 동탄생활권 4천만원대 내집마련">
     </div>
 
-    <!-- 전화상담 & 문자문의 2버튼 체제 -->
+    <!-- 즉시 전화 & 문자 상담 액션 버튼 -->
     <div class="mo-btn-group">
       <a href="tel:1555-0031" class="btn-call">
         <span>📞 즉시 전화상담</span>
       </a>
-      <a href="sms:1555-0031?body=오산 헤리티지 자이 분양가/위치 문의합니다." class="btn-sms">
+      <a href="sms:1555-0031?body=오산 헤리티지 자이 분양가 및 모델하우스 위치 문자 요청합니다." class="btn-sms">
         <span>💬 문자 문의</span>
       </a>
     </div>
