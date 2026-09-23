@@ -6,10 +6,10 @@
   <title>오산 헤리티지 자이 | 공식 분양상담센터</title>
 
   <!-- 메타 태그 / SEO -->
-  <meta name="description" content="1,783세대 브랜드 대단지 오산 헤리티지 자이, 500만원 계약, 방문예약 및 분양가 상담">
+  <meta name="description" content="1,783세대 브랜드 대단지 오산 헤리티지 자이, 500만원 계약, 실시간 분양가 및 잔여세대 전화상담">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="오산 헤리티지 자이 - 모델하우스 방문예약">
-  <meta property="og:description" content="동탄생활권 1군 브랜드 대단지! 500만원으로 계약 가능">
+  <meta property="og:title" content="오산 헤리티지 자이 - 공식 분양상담센터">
+  <meta property="og:description" content="동탄생활권 1군 브랜드 대단지! 500만원 계약 가능 | 24시간 전화상담 1555-0031">
   <meta property="og:image" content="./main-img.jpg">
 
   <style>
@@ -95,110 +95,130 @@
       background: #000;
     }
 
-    /* ================= 우측 사이드 상담신청 패널 ================= */
+    /* ================= 우측 사이드 전화상담 고정 패널 ================= */
     .side-panel {
       width: 380px;
       position: sticky;
-      top: 80px;
+      top: 86px;
       height: fit-content;
       margin-left: 20px;
-      padding: 24px;
+      padding: 28px 24px;
       background: #161f30;
       border: 1px solid #2d3c53;
-      border-radius: 14px;
+      border-radius: 16px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       z-index: 100;
+      text-align: center;
+    }
+    .side-panel .badge {
+      display: inline-block;
+      background: #dc2626;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      letter-spacing: -0.3px;
     }
     .side-panel h3 {
-      font-size: 1.35rem;
+      font-size: 1.4rem;
       font-weight: 800;
       color: #ffffff;
-      text-align: center;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
+      letter-spacing: -0.5px;
     }
     .side-panel p.sub {
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       color: #94a3b8;
-      text-align: center;
-      margin-bottom: 18px;
+      margin-bottom: 22px;
+      line-height: 1.5;
     }
+    
     .direct-call-box {
       background: #0b111e;
-      border: 1px solid #1e40af;
-      border-radius: 10px;
-      padding: 12px;
-      text-align: center;
+      border: 2px solid #2563eb;
+      border-radius: 12px;
+      padding: 20px 14px;
       margin-bottom: 18px;
     }
     .direct-call-box span {
       display: block;
       color: #93c5fd;
-      font-size: 0.8rem;
-      font-weight: 600;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 4px;
     }
     .direct-call-box a {
-      font-size: 1.7rem;
+      display: block;
+      font-size: 2.1rem;
       font-weight: 900;
       color: #facc15;
-      letter-spacing: 0.5px;
+      letter-spacing: 1px;
+      transition: transform 0.15s ease;
+    }
+    .direct-call-box a:hover {
+      transform: scale(1.03);
     }
 
-    /* 입력 양식 */
-    .form-row {
-      margin-bottom: 14px;
+    .info-list {
+      list-style: none;
+      text-align: left;
+      background: rgba(11, 17, 30, 0.6);
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      font-size: 0.82rem;
+      color: #cbd5e1;
     }
-    .form-row label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #e2e8f0;
+    .info-list li {
       margin-bottom: 6px;
-    }
-    .form-row input, 
-    .form-row select, 
-    .form-row textarea {
-      width: 100%;
-      padding: 12px;
-      background: #0b111e;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      color: #fff;
-      font-size: 0.95rem;
-      outline: none;
-    }
-    .form-row input:focus, 
-    .form-row textarea:focus {
-      border-color: #38bdf8;
-    }
-    .form-row textarea {
-      resize: none;
-      height: 70px;
-    }
-    .agree-check {
-      font-size: 0.78rem;
-      color: #94a3b8;
-      margin-bottom: 16px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
-    .agree-check input {
-      accent-color: #2563eb;
+    .info-list li:last-child { margin-bottom: 0; }
+    .info-list li::before {
+      content: "✔";
+      color: #38bdf8;
+      font-weight: bold;
     }
-    .submit-button {
+
+    .btn-call-large {
+      display: block;
       width: 100%;
-      background: #2563eb;
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
       color: #fff;
-      padding: 15px;
-      border: 0;
+      padding: 16px;
+      border-radius: 10px;
+      font-size: 1.15rem;
+      font-weight: 900;
+      text-align: center;
+      box-shadow: 0 4px 14px rgba(220, 38, 38, 0.4);
+      transition: opacity 0.2s;
+    }
+    .btn-call-large:hover {
+      opacity: 0.92;
+    }
+
+    .btn-sms-side {
+      display: block;
+      width: 100%;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      padding: 12px;
       border-radius: 8px;
-      font-size: 1.1rem;
-      font-weight: 800;
-      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-align: center;
+      margin-top: 10px;
       transition: background 0.2s;
     }
-    .submit-button:hover {
-      background: #1d4ed8;
+    .btn-sms-side:hover {
+      background: #334155;
+      color: #fff;
     }
 
     /* ================= 푸터 ================= */
@@ -244,29 +264,31 @@
       margin: 0 auto;
     }
     .btn-call {
-      flex: 1;
-      height: 48px;
+      flex: 2;
+      height: 50px;
       background: #dc2626;
       color: #fff;
       font-weight: 900;
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
+      box-shadow: 0 3px 10px rgba(220, 38, 38, 0.4);
     }
-    .btn-reserve {
-      flex: 1;
-      height: 48px;
+    .btn-sms {
+      flex: 1.2;
+      height: 50px;
       background: #2563eb;
       color: #fff;
-      font-weight: 900;
-      font-size: 1.05rem;
+      font-weight: 800;
+      font-size: 0.95rem;
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 4px;
     }
 
     /* ================= 반응형 (모바일 최적화) ================= */
@@ -290,14 +312,6 @@
       .mo-bar {
         display: block;
       }
-      .mobile-form-sec {
-        display: block !important;
-        padding: 30px 16px;
-        background: #161f30;
-      }
-    }
-    .mobile-form-sec {
-      display: none;
     }
   </style>
 </head>
@@ -317,10 +331,10 @@
       <a href="#summary">사업개요</a>
       <a href="#premium">프리미엄</a>
       <a href="#interior">인테리어</a>
-      <a href="#inquiry-box">방문예약</a>
+      <a href="tel:1555-0031" style="color: #facc15;">전화상담</a>
     </nav>
 
-    <!-- 우측 헤더 전화 배너 (mo-header-tel.gif) -->
+    <!-- 우측 헤더 전화 배너 (클릭 시 즉시 통화 연결) -->
     <a href="tel:1555-0031" class="header-tel-btn">
       <img src="./mo-header-tel.gif" alt="전화상담 1555-0031">
     </a>
@@ -330,125 +344,69 @@
   <div class="container">
     <div class="main-content">
 
-      <!-- ① 상단 메인 히어로 (main-img.jpg) -->
+      <!-- ① 상단 메인 히어로 -->
       <section class="img-wrap" id="hero">
         <img src="./main-img.jpg" alt="오산 헤리티지 자이 500만원 계약가능">
       </section>
 
-      <!-- ② 핵심 4대 특장점 (benefit.png) -->
+      <!-- ② 핵심 4대 특장점 -->
       <section class="img-wrap" id="benefit">
         <img src="./benefit.png" alt="SPECIAL BENEFIT 4 - 병점 동탄 더블생활권">
       </section>
 
-      <!-- ③ 직주근접 띠배너 01 (banner01.jpg) -->
+      <!-- ③ 직주근접 띠배너 01 -->
       <section class="img-wrap">
         <img src="./banner01.jpg" alt="삼성전자 캠퍼스 직주근접 1,783세대">
       </section>
 
-      <!-- ④ 사업개요 상세표 (summary.jpg) -->
+      <!-- ④ 사업개요 상세표 -->
       <section class="img-wrap" id="summary">
         <img src="./summary.jpg" alt="사업개요 1BL 2BL 공급규모 총 1,783세대">
       </section>
 
-      <!-- ⑤ 프리미엄 조감도 & 100만원 상품권 혜택 (landing_top_...) -->
+      <!-- ⑤ 프리미엄 조감도 & 혜택 -->
       <section class="img-wrap" id="premium">
         <img src="./landing_top_144686_1789021183_0_62512015.jpg" alt="선착순 계약시 100만원 상품권 증정">
       </section>
 
-      <!-- ⑥ 스카이라운지 커뮤니티 띠배너 03 (banner03.jpg) -->
+      <!-- ⑥ 스카이라운지 커뮤니티 띠배너 03 -->
       <section class="img-wrap">
         <img src="./banner03.jpg" alt="26층 스카이라운지 커뮤니티 단지 내 사우나">
       </section>
 
-      <!-- ⑦ 인테리어 갤러리 (interior.jpg) -->
+      <!-- ⑦ 인테리어 갤러리 -->
       <section class="img-wrap" id="interior">
         <img src="./interior.jpg" alt="세련된 감각으로 완성한 인테리어 갤러리">
       </section>
 
-      <!-- 모바일 전용 상담 폼 (화면 축소 시 하단 표시) -->
-      <section class="mobile-form-sec" id="inquiry-box-mo">
-        <div style="max-width: 440px; margin: 0 auto; color: #fff;">
-          <h3 style="font-size: 1.45rem; text-align: center; margin-bottom: 6px;">VIP 모델하우스 방문예약</h3>
-          <p style="text-align: center; color: #94a3b8; font-size: 0.85rem; margin-bottom: 20px;">잔여동호수 실시간 배정 및 분양가 상담</p>
-          
-          <form onsubmit="onFormSubmit(event)">
-            <div class="form-row">
-              <label>성함 *</label>
-              <input type="text" placeholder="고객명 입력" required>
-            </div>
-            <div class="form-row">
-              <label>연락처 *</label>
-              <input type="tel" placeholder="010-0000-0000" required>
-            </div>
-            <div class="form-row">
-              <label>관심 평형대</label>
-              <select>
-                <option value="전체">평형 선택 (전체)</option>
-                <option value="75㎡">75㎡ (구 29평)</option>
-                <option value="84㎡">84㎡ (구 34평)</option>
-                <option value="102㎡">102㎡ (구 40평)</option>
-                <option value="대형">124㎡ / 166㎡</option>
-              </select>
-            </div>
-            <div class="form-row">
-              <label>방문 희망일 및 문의사항</label>
-              <textarea placeholder="방문 희망일 또는 궁금하신 점을 적어주세요."></textarea>
-            </div>
-            <div class="agree-check">
-              <input type="checkbox" id="check-mo" checked required>
-              <label for="check-mo">개인정보 수집 및 분양상담 목적 활용 동의 [필수]</label>
-            </div>
-            <button type="submit" class="submit-button">상담 예약 신청하기</button>
-          </form>
-        </div>
-      </section>
-
     </div>
 
-    <!-- 3. PC 전용 우측 고정 상담 폼 -->
-    <aside class="side-panel" id="inquiry-box">
-      <h3>모델하우스 방문예약</h3>
-      <p class="sub">선착순 동호지정 및 분양가 빠른 안내</p>
+    <!-- 3. PC 전용 우측 고정 다이렉트 통화 패널 -->
+    <aside class="side-panel">
+      <span class="badge">실시간 동·호수 상담</span>
+      <h3>공식 분양상담센터</h3>
+      <p class="sub">견본주택 위치 안내 및 잔여세대 문의<br>전문 상담사가 실시간으로 안내합니다.</p>
 
       <div class="direct-call-box">
-        <span>전화상담 및 모델하우스 위치 문자 전송</span>
+        <span>터치/클릭 시 즉시 전화 연결</span>
         <a href="tel:1555-0031">1555-0031</a>
       </div>
 
-      <form onsubmit="onFormSubmit(event)">
-        <div class="form-row">
-          <label>성함 *</label>
-          <input type="text" placeholder="성함 입력" required>
-        </div>
+      <ul class="info-list">
+        <li>계약금 500만원 정액제 상담</li>
+        <li>잔여 로얄동·호수 실시간 배정</li>
+        <li>견본주택 오시는 길 문자 발송</li>
+        <li>상담사 다이렉트 1:1 매칭</li>
+      </ul>
 
-        <div class="form-row">
-          <label>휴대폰 번호 *</label>
-          <input type="tel" placeholder="010-0000-0000" required>
-        </div>
+      <a href="tel:1555-0031" class="btn-call-large">
+        📞 지금 바로 전화상담
+      </a>
 
-        <div class="form-row">
-          <label>관심 평형</label>
-          <select>
-            <option value="전체">전체 타입 문의</option>
-            <option value="75㎡">75㎡ (선호도 높음)</option>
-            <option value="84㎡">84㎡ (인기 국민평형)</option>
-            <option value="102㎡">102㎡ (여유로운 중대형)</option>
-            <option value="대형">124㎡ / 166㎡ (희소 대형)</option>
-          </select>
-        </div>
-
-        <div class="form-row">
-          <label>문의/방문희망일</label>
-          <textarea placeholder="방문 예정 일자나 문의사항을 남겨주세요."></textarea>
-        </div>
-
-        <div class="agree-check">
-          <input type="checkbox" id="check-pc" checked required>
-          <label for="check-pc">개인정보 수집 및 분양안내 활용 동의</label>
-        </div>
-
-        <button type="submit" class="submit-button">VIP 방문예약 신청</button>
-      </form>
+      <!-- 문자 상담 버튼 (PC/태블릿 등 문자앱 연동) -->
+      <a href="sms:1555-0031?body=오산 헤리티지 자이 분양가 및 모델하우스 위치 문의드립니다." class="btn-sms-side">
+        💬 견본주택 위치 문자 전송받기
+      </a>
     </aside>
   </div>
 
@@ -457,43 +415,34 @@
     <div class="footer-inner">
       <p><strong>오산 헤리티지 자이 견본주택 공식 분양안내관</strong></p>
       <p>사업지: 경기도 오산시 양산동 223번지 일원(1BL) / 양산동 328-2번지 일원(2BL)</p>
-      <p>분양문의: <a href="tel:1555-0031" style="color: #facc15; font-weight: bold;">1555-0031</a></p>
+      <p>분양문의 직통: <a href="tel:1555-0031" style="color: #facc15; font-weight: bold;">1555-0031</a> (연중무휴 상담 가능)</p>
       <p style="margin-top: 10px; color: #475569;">※ 본 웹사이트에 수록된 조감도, 단지배치도, 이미지 등은 소비자의 이해를 돕기 위한 것으로 실제와 차이가 있을 수 있습니다.</p>
       <p style="color: #475569;">Copyright &copy; 2026 오산 헤리티지 자이. All Rights Reserved.</p>
     </div>
   </footer>
 
-  <!-- 5. 모바일 플로팅 하단바 -->
+  <!-- 5. 모바일 플로팅 하단바 (전화 + 문자 유도) -->
   <div class="mo-bar">
-    <!-- 파격 조건변경 말풍선 (quick_bottom_bubble.jpg) -->
+    <!-- 파격 조건변경 말풍선 -->
     <div class="mo-bubble">
       <img src="./quick_bottom_bubble.jpg" alt="파격 조건변경 강남 20분대">
     </div>
 
-    <!-- 롤링 카피 배너 (mo-quick-bottom.jpg) -->
+    <!-- 롤링 카피 배너 -->
     <div class="mo-rolling">
       <img src="./mo-quick-bottom.jpg" alt="1,783세대 대단지 4천만원대 내집마련">
     </div>
 
-    <!-- 전화상담 & 방문예약 버튼 열 -->
+    <!-- 전화상담 & 문자문의 2버튼 체제 -->
     <div class="mo-btn-group">
       <a href="tel:1555-0031" class="btn-call">
-        <span>📞 전화상담</span>
+        <span>📞 즉시 전화상담</span>
       </a>
-      <button type="button" class="btn-reserve" onclick="document.querySelector('#inquiry-box-mo')?.scrollIntoView({behavior:'smooth'})">
-        <span>📋 방문예약</span>
-      </button>
+      <a href="sms:1555-0031?body=오산 헤리티지 자이 분양가/위치 문의합니다." class="btn-sms">
+        <span>💬 문자 문의</span>
+      </a>
     </div>
   </div>
-
-  <!-- 간단한 폼 전송 스크립트 -->
-  <script>
-    function onFormSubmit(e) {
-      e.preventDefault();
-      alert("VIP 방문 예약 신청이 정상적으로 완료되었습니다.\n담당자가 확인 후 빠른 안내 도와드리겠습니다.");
-      e.target.reset();
-    }
-  </script>
 
 </body>
 </html>
