@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>오산 헤리티지 자이 | 공식 분양홍보관</title>
 
-  <!-- 메타 태그 & SEO -->
   <meta name="description" content="1,783세대 매머드급 브랜드 타운 오산 헤리티지 자이, 500만원 계약금 정액제, 견본주택 위치 및 잔여세대 실시간 전화상담 1555-0031">
   <meta property="og:type" content="website">
   <meta property="og:title" content="오산 헤리티지 자이 - 공식 분양홍보관">
@@ -18,7 +17,7 @@
     html, body {
       font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", sans-serif;
       color: #1e293b;
-      background-color: #f8fafc; /* 전체 사이트 바탕: 화사하고 정갈한 화이트-그레이 */
+      background-color: #f8fafc;
       line-height: 1.5;
       scroll-behavior: smooth;
       -webkit-text-size-adjust: none;
@@ -96,7 +95,7 @@
 
     /* ================= 2-Column Wide Layout ================= */
     .container {
-      max-width: 1440px; /* 전체 폭을 1440px로 넉넉하게 확장 */
+      max-width: 1440px;
       margin: 70px auto 0 auto;
       display: flex;
       align-items: flex-start;
@@ -105,11 +104,10 @@
       gap: 28px;
     }
 
-    /* 이미지 영역: 어둡고 웅장한 다크 백그라운드로 대비 처리 */
     .main-content {
       flex: 1;
       min-width: 0;
-      background: #05070c; /* 이미지와 매끄럽게 연결되는 딥 블랙 */
+      background: #05070c;
       border-radius: 20px;
       overflow: hidden;
       box-shadow: 0 12px 40px rgba(15, 23, 42, 0.12);
@@ -127,7 +125,7 @@
       object-fit: cover;
     }
 
-    /* ================= 우측 사이드 퀵 패널 (프리미엄 컨시어지) ================= */
+    /* ================= 우측 사이드 퀵 패널 ================= */
     .side-panel {
       width: 360px;
       flex-shrink: 0;
@@ -179,7 +177,6 @@
       line-height: 1.45;
     }
 
-    /* 전화번호 다이렉트 박스 */
     .direct-call-box {
       background: #f8fafc;
       border: 2px solid #0070c0;
@@ -208,7 +205,6 @@
       transform: scale(1.03);
     }
 
-    /* 핵심 안내 사항 */
     .info-list {
       list-style: none;
       text-align: left;
@@ -234,7 +230,6 @@
       flex-shrink: 0;
     }
 
-    /* 액션 버튼 */
     .btn-call-large {
       display: flex;
       align-items: center;
@@ -302,17 +297,39 @@
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       border-top: 1px solid #e2e8f0;
-      padding: 8px 12px 10px 12px;
+      padding: 6px 12px 10px 12px;
       z-index: 999;
-      box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.1);
     }
-    .mo-bubble {
+    
+    .mo-banner-container {
+      position: relative;
       max-width: 480px;
-      margin: 0 auto 6px auto;
+      margin: 0 auto;
+    }
+    .btn-banner-close {
+      position: absolute;
+      top: -6px;
+      right: 2px;
+      background: rgba(15, 23, 42, 0.75);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      font-size: 13px;
+      line-height: 20px;
+      text-align: center;
+      cursor: pointer;
+      z-index: 10;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .mo-bubble {
+      margin-bottom: 4px;
     }
     .mo-rolling {
-      max-width: 480px;
-      margin: 0 auto 8px auto;
+      margin-bottom: 8px;
     }
     .mo-btn-group {
       display: flex;
@@ -379,7 +396,6 @@
 
 <body>
 
-  <!-- 1. 헤더 (화이트/블루 클린 테마) -->
   <header class="top-header">
     <div class="header-logo">
       <span class="badge-xi">Xi</span>
@@ -389,60 +405,45 @@
     <nav class="nav-bar">
       <a href="#hero">처음으로</a>
       <a href="#benefit">4대특장점</a>
-      <a href="#summary">사업개요</a>
       <a href="#premium">프리미엄</a>
       <a href="#interior">인테리어</a>
       <a href="tel:1555-0031" class="tel-link">📞 직통 1555-0031</a>
     </nav>
 
-    <!-- 우측 헤더 전화상담 배너 (mo-header-tel.gif)[cite: 7] -->
     <a href="tel:1555-0031" class="header-tel-btn">
       <img src="./mo-header-tel.gif" alt="전화상담 1555-0031">
     </a>
   </header>
 
-  <!-- 2. 본문 2컬럼 레이아웃 (어두운 이미지 컨테이너 x 화이트 바탕) -->
   <div class="container">
     <main class="main-content">
 
-      <!-- ① 메인 히어로 배너 (main-img.jpg: 가로 100% 풀 와이드)[cite: 6] -->
       <section class="img-wrap" id="hero">
         <img src="./main-img.jpg" alt="오산 헤리티지 자이 - 동탄생활권 1군 브랜드 대단지 500만원으로 계약가능">
       </section>
 
-      <!-- ② SPECIAL BENEFIT 4대 특장점 (benefit.png)[cite: 3] -->
       <section class="img-wrap" id="benefit">
-        <img src="./benefit.png" alt="SPECIAL BENEFIT 4 - 병점 동탄 더블생활권, 초등학교 안심학세권, 강남 20분대 GTX-C, 스카이라운지 명품 커뮤니티">
+        <img src="./benefit.jpg" alt="SPECIAL BENEFIT 4 - 병점 동탄 더블생활권, 초등학교 안심학세권, 강남 20분대 GTX-C, 스카이라운지 명품 커뮤니티">
       </section>
 
-      <!-- ③ 직주근접 띠배너 (banner01.jpg)[cite: 1] -->
       <section class="img-wrap">
         <img src="./banner01.jpg" alt="삼성전자 캠퍼스 직주근접 1,783세대 대단지 500만원 계약가능">
       </section>
 
-      <!-- ④ 사업개요 상세표 (summary.jpg)[cite: 10] -->
-      <section class="img-wrap" id="summary">
-        <img src="./summary.jpg" alt="오산 양산4지구 1BL 및 2BL 사업개요 공급규모 1,783세대 상세표">
-      </section>
-
-      <!-- ⑤ 프리미엄 조감도 & 100만원 상품권 증정 (landing_top_...)[cite: 5] -->
       <section class="img-wrap" id="premium">
         <img src="./landing_top_144686_1789021183_0_62512015.jpg" alt="강남 20분대 역세권, 4천만원대로 내집마련, 선착순 계약시 100만원 상품권 증정">
       </section>
 
-      <!-- ⑥ 커뮤니티 띠배너 03 (banner03.jpg)[cite: 2] -->
       <section class="img-wrap">
         <img src="./banner03.jpg" alt="26층 전망 스카이라운지 커뮤니티 단지 내 사우나 및 키즈도서관 운영">
       </section>
 
-      <!-- ⑦ 세련된 인테리어 갤러리 (interior.jpg)[cite: 4] -->
       <section class="img-wrap" id="interior">
         <img src="./interior.jpg" alt="오산 헤리티지 자이 거실 주방 침실 드레스룸 인테리어 갤러리">
       </section>
 
     </main>
 
-    <!-- 3. PC 전용 우측 고정 컨시어지 패널 -->
     <aside class="side-panel">
       <div class="badge-pill">
         <span class="dot"></span>
@@ -467,14 +468,12 @@
         📞 지금 바로 전화상담
       </a>
 
-      <!-- 문자 상담 버튼 -->
       <a href="sms:1555-0031?body=오산 헤리티지 자이 모델하우스 위치 및 분양가 문의드립니다." class="btn-sms-side">
         💬 모델하우스 위치 문자받기
       </a>
     </aside>
   </div>
 
-  <!-- 4. 푸터 영역 -->
   <footer class="footer">
     <div class="footer-inner">
       <p><strong>오산 헤리티지 자이 견본주택 공식 분양안내관</strong></p>
@@ -485,19 +484,19 @@
     </div>
   </footer>
 
-  <!-- 5. 모바일 플로팅 하단바 (전화 + 문자) -->
   <div class="mo-bar">
-    <!-- 기차 말풍선 배너 (quick_bottom_bubble.jpg)[cite: 9] -->
-    <div class="mo-bubble">
-      <img src="./quick_bottom_bubble.jpg" alt="파격 조건변경 강남 20분대 1호선 동탄트램 GTX-C 병점역">
+    <div class="mo-banner-container" id="moBannerWrapper">
+      <button type="button" class="btn-banner-close" onclick="closeMoBanner()" aria-label="배너 닫기">✕</button>
+
+      <div class="mo-bubble">
+        <img src="./quick_bottom_bubble.gif" alt="파격 조건변경 강남 20분대 1호선 동탄트램 GTX-C 병점역">
+      </div>
+
+      <div class="mo-rolling">
+        <img src="./mo-quick-bottom.jpg" alt="1,783세대 대단지 동탄생활권 4천만원대 내집마련">
+      </div>
     </div>
 
-    <!-- 롤링 카피 배너 (mo-quick-bottom.jpg)[cite: 8] -->
-    <div class="mo-rolling">
-      <img src="./mo-quick-bottom.jpg" alt="1,783세대 대단지 동탄생활권 4천만원대 내집마련">
-    </div>
-
-    <!-- 하단 통화 / 문자 버튼 열 -->
     <div class="mo-btn-group">
       <a href="tel:1555-0031" class="btn-call">
         <span>📞 즉시 전화상담</span>
@@ -507,6 +506,15 @@
       </a>
     </div>
   </div>
+
+  <script>
+    function closeMoBanner() {
+      const banner = document.getElementById('moBannerWrapper');
+      if (banner) {
+        banner.style.display = 'none';
+      }
+    }
+  </script>
 
 </body>
 </html>
