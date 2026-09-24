@@ -428,7 +428,7 @@
       font-weight: 600;
     }
 
-    /* TELEPHONE CALL CTA SECTION (Replaced form section) */
+    /* TELEPHONE CALL CTA SECTION */
     .call-cta-section {
       background: radial-gradient(circle at center, #161b26 0%, #06080b 100%);
       padding: 95px 0;
@@ -499,22 +499,12 @@
       color: #cbd5e1;
       font-size: 14px;
     }
-    .btn-submit-img-link {
-      display: inline-block;
-      margin-top: 25px;
-      max-width: 320px;
-      transition: transform 0.2s, filter 0.2s;
-    }
-    .btn-submit-img-link:hover {
-      transform: scale(1.02);
-      filter: brightness(1.1);
-    }
 
     /* FOOTER */
     footer {
       background: #050608;
       border-top: 1px solid #1a1e24;
-      padding: 60px 0 120px; /* extra space for mobile bottom bar */
+      padding: 60px 0 120px;
       color: #64748b;
       font-size: 13px;
       line-height: 1.8;
@@ -726,7 +716,7 @@
         display: block;
       }
       .floating-call-btn {
-        display: none; /* replaced by mobile sticky bar */
+        display: none;
       }
       .floating-top-btn {
         bottom: 75px;
@@ -743,14 +733,12 @@
 </head>
 <body>
 
-  <!-- Top Sticky Quick Bar (mo-quick-top.gif) -> tel:1555-0031 -->
   <div class="top-event-bar">
     <a href="tel:1555-0031" title="전화상담 1555-0031 연결">
       <img src="mo-quick-top.gif" alt="500만원으로 계약가능! 전화문의 1555-0031">
     </a>
   </div>
 
-  <!-- Header Navigation -->
   <header id="main-header">
     <div class="container">
       <div class="nav-inner">
@@ -781,7 +769,6 @@
     </div>
   </header>
 
-  <!-- 1. HERO SECTION (main-img.png & Highlights) -->
   <section id="hero" class="section-black">
     <div class="container">
       <div class="section-header">
@@ -790,14 +777,12 @@
         <p class="section-desc">계약금 500만원으로 완성하는 프리미엄 주거의 새로운 기준</p>
       </div>
 
-      <!-- Main Visual Frame -> tel:1555-0031 -->
       <div class="hero-media-wrap">
         <a href="tel:1555-0031" title="전화상담 1555-0031 연결">
           <img src="main-img.png" alt="오산헤리티지자이 메인 조감도 및 계약 혜택 안내">
         </a>
       </div>
 
-      <!-- Key Metrics Cards -->
       <div class="hero-highlights">
         <div class="highlight-card">
           <div class="highlight-label">SCALE</div>
@@ -821,14 +806,12 @@
         </div>
       </div>
 
-      <!-- Key Highlights Banner (landing_top) -> tel:1555-0031 -->
       <div class="landing-top-feature">
         <a href="tel:1555-0031" title="전화상담 1555-0031 연결">
           <img src="landing_top_144686_1789021183_0_62512015.jpg" alt="선착순 계약 상품권 증정 및 핵심 3대 프리미엄">
         </a>
       </div>
 
-      <!-- Feature Banners (banner01, banner02, banner03) -> tel:1555-0031 -->
       <div class="banner-grid">
         <div class="banner-item">
           <a href="tel:1555-0031" title="전화상담 1555-0031 연결">
@@ -849,7 +832,6 @@
     </div>
   </section>
 
-  <!-- 2. OVERVIEW SECTION (summary.png) -->
   <section id="overview" class="section-black">
     <div class="container">
       <div class="section-header">
@@ -908,7 +890,6 @@
     </div>
   </section>
 
-  <!-- 3. PREMIUM BENEFIT SECTION (benefit.png) -->
   <section id="premium" class="section-black">
     <div class="container">
       <div class="section-header">
@@ -925,7 +906,6 @@
     </div>
   </section>
 
-  <!-- 4. LOCATION SECTION (location.png) -->
   <section id="location" class="section-black">
     <div class="container">
       <div class="section-header">
@@ -942,7 +922,6 @@
     </div>
   </section>
 
-  <!-- 5. INTERIOR SECTION (interior.png / interior.png) - STRICT WHITE BACKGROUND -->
   <section id="interior" class="section-white">
     <div class="container">
       <div class="section-header">
@@ -967,7 +946,6 @@
     </div>
   </section>
 
-  <!-- 6. UNIT TYPES (type.png) -->
   <section id="types" class="section-black">
     <div class="container">
       <div class="section-header">
@@ -984,7 +962,6 @@
     </div>
   </section>
 
-  <!-- 7. COMMUNITY (community.png) -->
   <section id="community" class="section-black">
     <div class="container">
       <div class="section-header">
@@ -1001,7 +978,6 @@
     </div>
   </section>
 
-  <!-- 8. SITE PLAN (siteplan.png) -->
   <section id="siteplan" class="section-black">
     <div class="container">
       <div class="section-header">
@@ -1018,7 +994,6 @@
     </div>
   </section>
 
-  <!-- 9. LUXURY TELEPHONE CALL CTA SECTION (FORM COMPLETELY REMOVED) -->
   <section class="call-cta-section">
     <div class="container">
       <div class="call-cta-box">
@@ -1036,18 +1011,10 @@
           </a>
         </div>
         <p class="call-btn-sub">모바일 터치 시 즉시 전화 연결됩니다</p>
-
-        <!-- Use button image asset as a direct call link -->
-        <div>
-          <a href="tel:1555-0031" class="btn-submit-img-link" title="1555-0031 전화문의 바로가기">
-            <img src="button_144686_1788496185_49367504.png" alt="전화문의 1555-0031">
-          </a>
-        </div>
       </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer>
     <div class="container">
       <div class="footer-inner">
@@ -1057,7 +1024,7 @@
           <p>현장 위치: 경기도 오산시 양산동 223번지 일원 (1BL / 2BL)</p>
         </div>
         <div class="footer-desc">
-          <p>※ 본 웹사이트에 사용된 CG, 조감도, 투시도, 일러스트, 이미지 및 내용 등은 소비자의 이해를 돕기 위해 제작된 것으로 실제 시공 시 인허가 과정에 따라 다소 변경될 수 있습니다.</p>
+          <p>※ 본 웹사이트에 사용된 CG, 조감도, 투시도, 일러스트, 이미지 및 내용 등은 소비자의 이해를돕기 위해 제작된 것으로 실제 시공 시 인허가 과정에 따라 다소 변경될 수 있습니다.</p>
           <p>※ 교통시설 계획(GTX-C 병점역 연장, 동탄 트램 등) 및 체육공원, 초등학교 등은 관계기관의 사정에 따라 변경 또는 지연될 수 있습니다.</p>
         </div>
       </div>
@@ -1067,15 +1034,12 @@
     </div>
   </footer>
 
-  <!-- Floating Call Button -> tel:1555-0031 -->
   <a href="tel:1555-0031" class="floating-call-btn" title="전화상담 1555-0031">
     <svg viewBox="0 0 24 24"><path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
   </a>
 
-  <!-- Floating Top Button -->
   <a href="#hero" class="floating-top-btn" title="맨 위로 이동">TOP</a>
 
-  <!-- Mobile Bottom Sticky CTA -> Direct Call to 1555-0031 -->
   <div class="mobile-sticky-bar">
     <a href="tel:1555-0031" class="mobile-sticky-link" title="전화문의 1555-0031 바로 연결">
       <div class="mobile-call-info">
@@ -1090,7 +1054,6 @@
   </div>
 
   <script>
-    // Smooth scrolling & Mobile menu toggle only (No form/storage/analytics/fetch logic)
     document.addEventListener('DOMContentLoaded', function() {
       const menuBtn = document.getElementById('mobileMenuBtn');
       const header = document.getElementById('main-header');
