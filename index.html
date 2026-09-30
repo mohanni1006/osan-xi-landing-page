@@ -409,7 +409,7 @@
     }
 
     /* -----------------------------------------------------------
-       7. Overview
+       7. Overview (summary.png + Spec Table)
     ----------------------------------------------------------- */
     .overview-frame {
       border-radius: 16px;
@@ -578,7 +578,7 @@
       color: #fff;
       padding: 14px 16px;
       border-radius: 10px;
-      font-size: 16px; /* 아이폰 Safari 자동 화면 확대 방지 */
+      font-size: 16px; /* 아이폰 Safari 터치 시 화면 자동 확대 방지 */
       outline: none;
       transition: all 0.2s;
     }
@@ -743,7 +743,7 @@
     }
 
     /* -----------------------------------------------------------
-       12. 모바일 2단 고정 영역
+       12. 모바일 2단 고정 영역 (1555-0031 통일)
     ----------------------------------------------------------- */
     .fixed-bottom-wrap {
       display: none;
@@ -1329,7 +1329,7 @@
     </div>
   </section>
 
-  <!-- 12. 최종 상담 예약 (500 서버 에러 해결 및 [ninesoo] 담당자 지정) -->
+  <!-- 12. 최종 상담 예약 -->
   <section id="reservation">
     <div class="container">
       <div class="reservation-card">
@@ -1343,25 +1343,21 @@
         </div>
 
         <form id="consultForm" onsubmit="submitReservation(event)">
-          <!-- FormSubmit 서버 규격에 맞춘 영문 필드 (한글 파싱 충돌 500 에러 원천 방지) -->
-          <input type="hidden" name="_subject" value="[ninesoo] Osan Xi Reservation">
-          <input type="hidden" name="Manager" value="ninesoo">
-
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">고객 성함 <span class="req">*</span></label>
-              <input type="text" class="form-control" id="formName" name="Name" placeholder="홍길동" required>
+              <input type="text" class="form-control" id="formName" name="name" placeholder="홍길동" required>
             </div>
             <div class="form-group">
               <label class="form-label">전화번호 <span class="req">*</span></label>
-              <input type="tel" class="form-control" id="formPhone" name="Phone" placeholder="010-1234-5678" required>
+              <input type="tel" class="form-control" id="formPhone" name="phone" placeholder="010-1234-5678" required>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">전화 가능 시간대 <span class="req">*</span></label>
-              <select class="form-control" id="formTimeSelect" name="Call_Time" onchange="checkCustomTime(this)" required>
+              <select class="form-control" id="formTimeSelect" name="time_slot" onchange="checkCustomTime(this)" required>
                 <option value="오전 09:00 ~ 12:00">오전 09:00 ~ 12:00</option>
                 <option value="오후 12:00 ~ 15:00">오후 12:00 ~ 15:00</option>
                 <option value="오후 15:00 ~ 18:00">오후 15:00 ~ 18:00</option>
@@ -1376,7 +1372,7 @@
             </div>
             <div class="form-group">
               <label class="form-label">관심 평형</label>
-              <select class="form-control" id="formInterestType" name="Interest_Type">
+              <select class="form-control" id="formInterestType" name="interest_type">
                 <option value="전체 타입 상담">전체 타입 상담</option>
                 <option value="75㎡">75㎡ (실속형)</option>
                 <option value="84㎡ (A·B·C·D)">84㎡ (국민평형)</option>
@@ -1388,7 +1384,7 @@
 
           <div class="form-group full" style="margin-bottom:20px;">
             <label class="form-label">문의 내용 (선택)</label>
-            <textarea class="form-control" id="formMemo" name="Message" placeholder="분양가, 잔여 로얄층, 방문 희망일 등 궁금하신 내용을 편하게 남겨주세요."></textarea>
+            <textarea class="form-control" id="formMemo" name="memo" placeholder="분양가, 잔여 로얄층, 방문 희망일 등 궁금하신 내용을 편하게 남겨주세요."></textarea>
           </div>
 
           <div class="privacy-notice">
@@ -1509,7 +1505,7 @@
       });
     });
 
-    // 2. 자동 슬라이드
+    // 2. 자동 슬라이드 (2초 주기 무한 반복)
     let currentSlide = 0;
     const slides = document.querySelectorAll('.slide-item');
     const indicators = document.querySelectorAll('.slider-indicators .indicator');
@@ -1594,9 +1590,12 @@
       startSlideInterval();
     });
 
-    // 8. 에러 발생 시 원인이 정확히 뜨도록 개선된 예약 전송 엔진
+    // 8. 디스코드 웹후크 실시간 알림 연동 전송 엔진
     async function submitReservation(event) {
       event.preventDefault();
+
+      // 제공해주신 디스코드 웹후크 URL 연동
+      const DISCORD_WEBHOOK_URL = "https://discordapp.com/api/webhooks/1554751154645114910/wPKci9TAJYClwjjvczqFrsYzFM6C6N4g6Wcsu8TAm7iMux_mjipcEBxvUo2W4EBKJLkp";
 
       const agree = document.getElementById('formAgree').checked;
       if (!agree) {
@@ -1623,49 +1622,50 @@
       submitBtn.disabled = true;
       submitBtn.innerText = '상담 접수 전송 중...';
 
-      // 500 에러 원천 방지를 위한 영문 규격 페이로드 바인딩
-      const payload = {
-        _subject: "Osan Xi Reservation Inquiry",
-        "Manager": "ninesoo",
-        "Name": name,
-        "Phone": phone,
-        "Call_Time": timeSlot,
-        "Interest_Type": interest,
-        "Message": memo,
-        "Submit_Date": submitTime
+      // 디스코드 전용 카드형 메시지(Embeds) 페이로드 구성
+      const discordPayload = {
+        username: "오산헤리티지자이 알림봇",
+        embeds: [
+          {
+            title: "📢 [나인수] 신규 상담예약 접수 완료!",
+            color: 12951641, // 브랜드 골드 색상 (#C5A059)
+            fields: [
+              { name: "👤 고객 성함", value: `**${name}**`, inline: true },
+              { name: "📞 전화번호", value: `**${phone}**`, inline: true },
+              { name: "⏰ 통화 가능 시간", value: timeSlot, inline: true },
+              { name: "🏠 관심 평형", value: interest, inline: true },
+              { name: "📝 문의 내용", value: memo, inline: false },
+              { name: "📅 신청 일시", value: submitTime, inline: false }
+            ],
+            footer: {
+              text: "오산헤리티지자이 공식 분양홍보관 (대표문의: 1555-0031)"
+            }
+          }
+        ]
       };
 
       try {
-        const response = await fetch("https://formsubmit.co/ajax/mohanni1006@gmail.com", {
+        const response = await fetch(DISCORD_WEBHOOK_URL, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
+            "Content-Type": "application/json"
           },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(discordPayload)
         });
 
-        // 서버 응답이 JSON 형식이 아닐 경우를 대비한 처리
-        let result;
-        const textResponse = await response.text();
-        try {
-          result = JSON.parse(textResponse);
-        } catch (e) {
-          result = { success: response.ok, message: textResponse };
-        }
-
-        if (response.ok && (result.success === "true" || result.success === true || response.status === 200)) {
-          alert("상담 예약이 정상 접수되었습니다.\n담당자(ninesoo)가 지정하신 시간대에 신속히 연락드리겠습니다.");
+        // 디스코드 웹후크는 성공 시 200 또는 204 No Content를 반환합니다.
+        if (response.ok || response.status === 204) {
+          alert("상담 예약이 정상 접수되었습니다.\n담당자(나인수)가 지정하신 시간대에 신속히 연락드리겠습니다.");
           document.getElementById('consultForm').reset();
-          document.getElementById('customTimeGroup').style.display = 'none';
+          if (document.getElementById('customTimeGroup')) {
+            document.getElementById('customTimeGroup').style.display = 'none';
+          }
         } else {
-          // 실패 시 어떤 오류인지 구체적인 내용 창 띄우기
-          const errorMsg = result.message || `서버 응답 코드: ${response.status} (${response.statusText})`;
-          alert("예약 전송 중 오류가 발생했습니다.\n\n[오류 원인]: " + errorMsg);
+          const errText = await response.text();
+          alert("디스코드 전송 중 오류가 발생했습니다. (코드: " + response.status + ")\n" + errText);
         }
       } catch (err) {
-        // 네트워크 끊김이나 CORS 차단 등의 세부 에러 내용 노출
-        alert("네트워크 통신 오류가 발생했습니다.\n\n[오류 원인]: " + err.message);
+        alert("네트워크 통신 오류가 발생했습니다.\n디스코드 웹후크 상태를 확인해 주세요.\n(상세 내용: " + err.message + ")");
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerText = '상담 예약 신청';
