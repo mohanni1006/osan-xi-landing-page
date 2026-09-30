@@ -80,7 +80,7 @@
     }
 
     /* -----------------------------------------------------------
-       2. Header GNB (상단 전화번호 버튼 삭제 후 정렬)
+       2. Header GNB
     ----------------------------------------------------------- */
     header {
       position: sticky;
@@ -151,7 +151,7 @@
     }
 
     /* -----------------------------------------------------------
-       3. 메인 HERO 섹션 (세로 높이 축소 & 설명 2줄 고정)
+       3. 메인 HERO 섹션 (상하 여백 25% 축소 & 설명 문구 간격 80% 축소)
     ----------------------------------------------------------- */
     #hero {
       position: relative;
@@ -160,8 +160,8 @@
         radial-gradient(circle at 85% 30%, rgba(0, 104, 153, 0.18), transparent 55%),
         radial-gradient(circle at 15% 75%, rgba(197, 160, 89, 0.12), transparent 50%),
         linear-gradient(180deg, #070a11 0%, #0d121c 45%, #05070b 100%);
-      min-height: auto; /* 불필요한 큰 세로 고정 높이 제거 */
-      padding: 50px 20px 55px; /* 세로 여백 대폭 슬림화 */
+      min-height: auto;
+      padding: 38px 20px 41px; /* 기존 50px/55px 대비 상하 공백 각각 25% 축소 */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -190,17 +190,17 @@
       color: #fff;
       line-height: 1.26;
       text-shadow: 0 4px 24px rgba(0,0,0,0.95);
-      margin-bottom: 14px; /* 여백 축소 */
+      margin-bottom: 12px;
       letter-spacing: -0.5px;
     }
 
-    /* 메인 설명 문구: PC와 모바일 모두 정확히 2줄로 고정 */
+    /* 메인 설명 문구: 정확히 2줄 유지 & 두 줄 사이 간격 80% 축소 (line-height: 1.15) */
     .hero-desc {
       font-size: clamp(14px, 1.85vw, 19px);
       color: #e2e8f0;
       font-weight: 400;
-      margin-bottom: 26px; /* 여백 축소 */
-      line-height: 1.6;
+      margin-bottom: 22px;
+      line-height: 1.15; /* 두 줄 사이 간격을 약 80% 줄임 */
       text-shadow: 0 2px 14px rgba(0,0,0,0.9);
     }
     .hero-desc-line {
@@ -284,6 +284,7 @@
 
     /* -----------------------------------------------------------
        5. 2.jpg / 3.jpg / 4.jpg / 5.jpg 자동 슬라이드
+       (하단 4개 버튼 무조건 가로 1줄 고정 적용)
     ----------------------------------------------------------- */
     .auto-slider-container {
       max-width: 1100px;
@@ -315,26 +316,34 @@
       height: auto;
       display: block;
     }
+
+    /* 슬라이드 하단 4개 버튼: 줄바꿈 없이 가로 1줄 유지 */
     .slider-indicators {
       display: flex;
       justify-content: center;
+      align-items: center;
       gap: 8px;
-      padding: 14px 10px;
+      padding: 12px 14px;
       background: #0c1018;
       border-top: 1px solid rgba(255, 255, 255, 0.06);
-      flex-wrap: wrap;
+      flex-wrap: nowrap; /* 줄바꿈 금지 */
+      width: 100%;
     }
     .slider-indicators .indicator {
-      padding: 8px 16px;
+      flex: 1 1 0; /* 4개 버튼이 너비를 정확히 균등 분할 */
+      min-width: 0;
+      padding: 9px 6px;
       border-radius: 20px;
       background: #141b27;
       color: #94a3b8;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.25s;
       border: 1px solid var(--border-dark);
       user-select: none;
+      text-align: center;
+      white-space: nowrap; /* 텍스트 줄바꿈 방지 */
     }
     .slider-indicators .indicator.active {
       background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
@@ -922,20 +931,20 @@
         padding-bottom: 115px;
       }
       #hero {
-        padding: 38px 12px 42px; /* 모바일 세로 길이 대폭 축소 */
+        padding: 28px 12px 32px; /* 모바일 상하 공백 기존 38px/42px 대비 약 25% 축소 */
       }
 
       .hero-title {
         font-size: clamp(23px, 6.2vw, 32px);
-        margin-bottom: 10px;
+        margin-bottom: 8px;
       }
 
-      /* 모바일에서도 절대 쪼개지지 않고 정확히 2줄로 유지 */
+      /* 모바일에서도 절대 쪼개지지 않고 정확히 2줄 & 간격 80% 축소 유지 */
       .hero-desc {
         font-size: clamp(11.5px, 3.1vw, 14.5px);
         letter-spacing: -0.4px;
-        line-height: 1.5;
-        margin-bottom: 20px;
+        line-height: 1.15; /* 모바일에서도 줄 간격 80% 축소 */
+        margin-bottom: 16px;
       }
       .hero-desc-line {
         display: block;
@@ -965,6 +974,19 @@
         letter-spacing: -0.4px;
         white-space: nowrap;
         margin-top: 2px;
+      }
+
+      /* 모바일 슬라이드 4개 버튼: 가로 1줄 완벽 고정 & 최적 폰트/패딩 */
+      .slider-indicators {
+        gap: 5px;
+        padding: 10px 8px;
+        flex-wrap: nowrap;
+      }
+      .slider-indicators .indicator {
+        padding: 8px 2px;
+        font-size: clamp(10.5px, 2.95vw, 13px);
+        letter-spacing: -0.3px;
+        white-space: nowrap;
       }
 
       .section-dark {
@@ -1001,7 +1023,7 @@
 </head>
 <body>
 
-  <!-- Header GNB (상단 전화번호 버튼 삭제 완료) -->
+  <!-- Header GNB -->
   <header id="main-header">
     <div class="container">
       <div class="nav-inner">
@@ -1033,7 +1055,7 @@
     </div>
   </header>
 
-  <!-- 1. 메인 HERO 섹션 (세로 높이 슬림화 & 설명 문구 정확히 2줄 고정) -->
+  <!-- 1. 메인 HERO 섹션 (상하 공백 25% 축소 & 설명 문구 간격 80% 축소) -->
   <section id="hero">
     <div class="hero-content">
       <h1 class="hero-title">병점역 新주거타운의 중심<br>오산헤리티지자이</h1>
@@ -1063,7 +1085,7 @@
     </div>
   </section>
 
-  <!-- 3. 2.jpg / 3.jpg / 4.jpg / 5.jpg 자동 슬라이드 (2초 주기 무한 반복) -->
+  <!-- 3. 2.jpg / 3.jpg / 4.jpg / 5.jpg 자동 슬라이드 (하단 4개 버튼 무조건 가로 한 줄 고정) -->
   <section id="location" class="section-dark">
     <div class="container">
       <div class="section-title-wrap">
@@ -1087,6 +1109,7 @@
             <img src="5.jpg" alt="센트럴 그린라이프 병점복합타운 1만평 체육공원">
           </div>
         </div>
+        <!-- 4개 버튼 무조건 가로 1줄 고정 영역 -->
         <div class="slider-indicators" id="sliderIndicators">
           <span class="indicator active" onclick="goToSlide(0)">미래가치</span>
           <span class="indicator" onclick="goToSlide(1)">광역교통</span>
