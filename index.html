@@ -743,7 +743,7 @@
     }
 
     /* -----------------------------------------------------------
-       12. 모바일 2단 고정 영역
+       12. 모바일 2단 고정 영역 (1555-0031 적용)
     ----------------------------------------------------------- */
     .fixed-bottom-wrap {
       display: none;
@@ -1329,7 +1329,7 @@
     </div>
   </section>
 
-  <!-- 12. 최종 상담 예약 (500 서버 에러 해결을 위해 영문 name 및 검증된 구조 적용) -->
+  <!-- 12. 최종 상담 예약 ([ninesoo] 담당자 및 인코딩 충돌 해결) -->
   <section id="reservation">
     <div class="container">
       <div class="reservation-card">
@@ -1342,11 +1342,10 @@
           </p>
         </div>
 
-        <form id="consultForm" action="https://formsubmit.co/mohanni1006@gmail.com" method="POST" onsubmit="return handleReservationSubmit(event)">
-          <!-- FormSubmit 서버 규격에 맞춘 영문 필드 구성 (한글 파싱 충돌 해결) -->
-          <input type="hidden" name="_subject" value="[나인수] 오산헤리티지자이 신규 상담예약 접수">
-          <input type="hidden" name="Manager" value="나인수">
-          <input type="hidden" name="_template" value="table">
+        <form id="consultForm" action="https://formsubmit.co/mohanni1006@gmail.com" method="POST" accept-charset="UTF-8" onsubmit="return handleReservationSubmit(event)">
+          <!-- ninesoo 식별자 적용 및 500 에러 원천 차단 필드 -->
+          <input type="hidden" name="_subject" value="[ninesoo] Osan Xi Reservation">
+          <input type="hidden" name="Manager" value="ninesoo">
           <input type="hidden" name="Call_Time" id="hiddenTimeSlot" value="">
           <input type="hidden" name="Submit_Date" id="hiddenSubmitTime" value="">
 
@@ -1597,7 +1596,7 @@
       startSlideInterval();
     });
 
-    // 8. 예약 신청 전송 기능 (FormSubmit 서버 500 에러 해결)
+    // 8. 예약 신청 전송 기능 (FormSubmit 서버 안정 전송)
     function handleReservationSubmit(event) {
       const agree = document.getElementById('formAgree').checked;
       if (!agree) {
@@ -1626,7 +1625,7 @@
       submitBtn.disabled = true;
       submitBtn.innerText = '상담 접수 전송 중...';
 
-      return true; // 충돌 없는 정식 폼 전송
+      return true;
     }
   </script>
 </body>
