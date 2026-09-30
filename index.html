@@ -1078,7 +1078,7 @@
     </div>
   </section>
 
-  <!-- 3. 자동 슬라이드 -->
+  <!-- 3. 2.jpg / 3.jpg / 4.jpg / 5.jpg 자동 슬라이드 -->
   <section id="location" class="section-dark">
     <div class="container">
       <div class="section-title-wrap">
@@ -1329,7 +1329,7 @@
     </div>
   </section>
 
-  <!-- 12. 최종 상담 예약 (아이폰 사파리 Load failed 차단 없는 안전한 표준 폼) -->
+  <!-- 12. 최종 상담 예약 (500 서버 에러 해결을 위해 영문 name 및 검증된 구조 적용) -->
   <section id="reservation">
     <div class="container">
       <div class="reservation-card">
@@ -1342,25 +1342,22 @@
           </p>
         </div>
 
-        <!-- 아이폰 사파리 보안 검열을 통과하는 공식 POST 전송 폼 -->
         <form id="consultForm" action="https://formsubmit.co/mohanni1006@gmail.com" method="POST" onsubmit="return handleReservationSubmit(event)">
-          <!-- FormSubmit 필수 필드 (담당자 나인수 및 자동 복귀 설정) -->
+          <!-- FormSubmit 서버 규격에 맞춘 영문 필드 구성 (한글 파싱 충돌 해결) -->
           <input type="hidden" name="_subject" value="[나인수] 오산헤리티지자이 신규 상담예약 접수">
-          <input type="hidden" name="담당자" value="나인수">
-          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="Manager" value="나인수">
           <input type="hidden" name="_template" value="table">
-          <input type="hidden" name="_next" id="formNextUrl" value="">
-          <input type="hidden" name="통화가능시간" id="hiddenTimeSlot" value="">
-          <input type="hidden" name="신청일시" id="hiddenSubmitTime" value="">
+          <input type="hidden" name="Call_Time" id="hiddenTimeSlot" value="">
+          <input type="hidden" name="Submit_Date" id="hiddenSubmitTime" value="">
 
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">고객 성함 <span class="req">*</span></label>
-              <input type="text" class="form-control" id="formName" name="신청자명" placeholder="홍길동" required>
+              <input type="text" class="form-control" id="formName" name="Name" placeholder="홍길동" required>
             </div>
             <div class="form-group">
               <label class="form-label">전화번호 <span class="req">*</span></label>
-              <input type="tel" class="form-control" id="formPhone" name="연락처" placeholder="010-1234-5678" required>
+              <input type="tel" class="form-control" id="formPhone" name="Phone" placeholder="010-1234-5678" required>
             </div>
           </div>
 
@@ -1382,7 +1379,7 @@
             </div>
             <div class="form-group">
               <label class="form-label">관심 평형</label>
-              <select class="form-control" id="formInterestType" name="관심평형">
+              <select class="form-control" id="formInterestType" name="Interest_Type">
                 <option value="전체 타입 상담">전체 타입 상담</option>
                 <option value="75㎡">75㎡ (실속형)</option>
                 <option value="84㎡ (A·B·C·D)">84㎡ (국민평형)</option>
@@ -1394,7 +1391,7 @@
 
           <div class="form-group full" style="margin-bottom:20px;">
             <label class="form-label">문의 내용 (선택)</label>
-            <textarea class="form-control" id="formMemo" name="문의내용" placeholder="분양가, 잔여 로얄층, 방문 희망일 등 궁금하신 내용을 편하게 남겨주세요."></textarea>
+            <textarea class="form-control" id="formMemo" name="Message" placeholder="분양가, 잔여 로얄층, 방문 희망일 등 궁금하신 내용을 편하게 남겨주세요."></textarea>
           </div>
 
           <div class="privacy-notice">
@@ -1598,16 +1595,9 @@
       openPopup();
       showSlide(0);
       startSlideInterval();
-      
-      // 예약 완료 후 되돌아왔을 때 안내창 표시
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('reserved') === 'success') {
-        alert("상담 예약이 성공적으로 접수되었습니다.\n지정하신 시간대에 전문 상담사가 신속히 연락드리겠습니다.");
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }
     });
 
-    // 8. 예약 신청 전송 기능 (아이폰 Safari Load failed 100% 방지 처리)
+    // 8. 예약 신청 전송 기능 (FormSubmit 서버 500 에러 해결)
     function handleReservationSubmit(event) {
       const agree = document.getElementById('formAgree').checked;
       if (!agree) {
@@ -1632,15 +1622,11 @@
       document.getElementById('hiddenTimeSlot').value = timeSlot;
       document.getElementById('hiddenSubmitTime').value = new Date().toLocaleString('ko-KR');
 
-      // 전송 완료 후 원래 페이지로 자동 복귀 설정
-      const currentUrl = window.location.origin + window.location.pathname;
-      document.getElementById('formNextUrl').value = currentUrl + '?reserved=success';
-
       const submitBtn = document.getElementById('submitBtn');
       submitBtn.disabled = true;
       submitBtn.innerText = '상담 접수 전송 중...';
 
-      return true; // 표준 폼 전송 실행
+      return true; // 충돌 없는 정식 폼 전송
     }
   </script>
 </body>
