@@ -281,7 +281,7 @@
     }
 
     /* -----------------------------------------------------------
-       5. 2.jpg / 3.jpg / 4.jpg / 5.jpg 자동 슬라이드
+       5. 2.jpg / 3.jpg / 4.jpg / 5.jpg 자동 슬라이드 (공백 제거 적용)
     ----------------------------------------------------------- */
     .auto-slider-container {
       max-width: 1100px;
@@ -296,7 +296,7 @@
     .slider-track {
       position: relative;
       width: 100%;
-      min-height: 240px;
+      min-height: auto; /* 고정 최소높이를 없애 이미지 높이에 딱 밀착 */
     }
     .slide-item {
       display: none;
@@ -514,7 +514,7 @@
     }
 
     /* -----------------------------------------------------------
-       9. Reservation Form Section (모바일 줌인 방지 font-size: 16px)
+       9. Reservation Form Section
     ----------------------------------------------------------- */
     #reservation {
       background: linear-gradient(180deg, #05070a 0%, #0c121d 50%, #000000 100%);
@@ -578,7 +578,7 @@
       color: #fff;
       padding: 14px 16px;
       border-radius: 10px;
-      font-size: 16px; /* 아이폰 Safari 터치 시 화면 자동 확대 방지 */
+      font-size: 16px;
       outline: none;
       transition: all 0.2s;
     }
@@ -743,7 +743,7 @@
     }
 
     /* -----------------------------------------------------------
-       12. 모바일 2단 고정 영역 (1555-0031 통일)
+       12. 모바일 2단 고정 영역
     ----------------------------------------------------------- */
     .fixed-bottom-wrap {
       display: none;
@@ -971,6 +971,11 @@
         margin-top: 2px;
       }
 
+      /* 모바일 슬라이드 트랙 높이 자동화 */
+      .slider-track {
+        min-height: auto;
+      }
+
       .slider-indicators {
         gap: 5px;
         padding: 10px 8px;
@@ -1112,7 +1117,7 @@
     </div>
   </section>
 
-  <!-- 4. 특화 배너 트리오 (1555-0031 적용) -->
+  <!-- 4. 특화 배너 트리오 -->
   <section class="section-dark">
     <div class="container">
       <div class="banner-trio">
@@ -1135,7 +1140,7 @@
     </div>
   </section>
 
-  <!-- 5. SPECIAL BENEFIT 4 (1555-0031 적용) -->
+  <!-- 5. SPECIAL BENEFIT 4 -->
   <section id="premium" class="section-dark">
     <div class="container">
       <div class="section-title-wrap">
@@ -1266,7 +1271,7 @@
     </div>
   </section>
 
-  <!-- 11. FAQ 섹션 (1555-0031 적용) -->
+  <!-- 11. FAQ 섹션 -->
   <section id="faq" class="section-dark">
     <div class="container">
       <div class="section-title-wrap">
@@ -1405,13 +1410,13 @@
           </button>
         </form>
 
-        <!-- Direct CTA (1555-0031 적용) -->
+        <!-- Direct CTA -->
         <div class="direct-call-box">
           <p class="direct-call-title">기다림 없이 지금 즉시 상담을 원하시나요?</p>
           <div class="direct-call-btns">
             <a href="tel:1555-0031" class="btn-action-call" title="1555-0031 전화상담 연결">
               <svg style="width:20px;height:20px;fill:currentColor" viewBox="0 0 24 24"><path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
-               대표문의 1555-0031
+              대표문의 1555-0031
             </a>
           </div>
         </div>
@@ -1419,7 +1424,7 @@
     </div>
   </section>
 
-  <!-- Footer (1555-0031 적용) -->
+  <!-- Footer -->
   <footer>
     <div class="container">
       <div class="footer-inner">
@@ -1449,7 +1454,7 @@
     <a href="#hero" class="btn-float top" title="맨 위로 이동">TOP</a>
   </div>
 
-  <!-- 모바일 2단 고정 영역 (1555-0031 적용) -->
+  <!-- 모바일 2단 고정 영역 -->
   <div class="fixed-bottom-wrap" id="fixedBottomWrap">
     <div class="fixed-top-badges">
       <div class="fixed-badge-card">
@@ -1594,7 +1599,6 @@
     async function submitReservation(event) {
       event.preventDefault();
 
-      // 제공해주신 디스코드 웹후크 URL 연동
       const DISCORD_WEBHOOK_URL = "https://discordapp.com/api/webhooks/1554751154645114910/wPKci9TAJYClwjjvczqFrsYzFM6C6N4g6Wcsu8TAm7iMux_mjipcEBxvUo2W4EBKJLkp";
 
       const agree = document.getElementById('formAgree').checked;
@@ -1622,13 +1626,12 @@
       submitBtn.disabled = true;
       submitBtn.innerText = '상담 접수 전송 중...';
 
-      // 디스코드 전용 카드형 메시지(Embeds) 페이로드 구성
       const discordPayload = {
         username: "오산헤리티지자이 알림봇",
         embeds: [
           {
             title: "📢 [나인수] 신규 상담예약 접수 완료!",
-            color: 12951641, // 브랜드 골드 색상 (#C5A059)
+            color: 12951641,
             fields: [
               { name: "👤 고객 성함", value: `**${name}**`, inline: true },
               { name: "📞 전화번호", value: `**${phone}**`, inline: true },
@@ -1653,7 +1656,6 @@
           body: JSON.stringify(discordPayload)
         });
 
-        // 디스코드 웹후크는 성공 시 200 또는 204 No Content를 반환합니다.
         if (response.ok || response.status === 204) {
           alert("상담 예약이 정상 접수되었습니다.\n담당자(나인수)가 지정하신 시간대에 신속히 연락드리겠습니다.");
           document.getElementById('consultForm').reset();
